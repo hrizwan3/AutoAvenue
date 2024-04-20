@@ -89,10 +89,34 @@ const car = async function(req, res) {
   });
 }
 
+// Route 4: GET /car_reviews/:make/:model
+const car_reviews = async function(req, res) {
+  const make = req.params.make;
+  const model = req.params.model;
+  const year = req.query.year ?? 0;
+  qry = `
+  SELECT Reviewer, Title, Review, Rating
+  FROM Reviews
+  WHERE Make LIKE "%${make}%" AND Model LIKE "${model}%"
+  `;
+  if (year) {
+    qry += ` AND Year = ${year}`
+  }
+  connection.query(
+    qry, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data);
+    }
+  });
+}
 
-// Route 4: GET /album/:album_id
+
+// GET /reviewer/:reviewer
+// fetches all reviews by a given reviewer
 const reviewer = async function(req, res) {
-  // TODO (TASK 5): implement a route that given a album_id, returns all information about the album
   const reviewer = req.params.reviewer_name;
   connection.query(`
   SELECT *
@@ -103,18 +127,19 @@ const reviewer = async function(req, res) {
       console.log(err);
       res.json({});
     } else {
-      res.json(data[0]);
+      res.json(data);
     }
   });
 }
 
+// GET /reviewer_avg/:reviewer
+// fetches the average rating of a given reviewer
 const reviewer_avg = async function(req, res) {
-  // TODO (TASK 5): implement a route that given a album_id, returns all information about the album
   const reviewer = req.params.reviewer_name;
   connection.query(`
   SELECT AVG(Rating)
   FROM Reviews
-  WHERE Reviewer = ${reviewer}
+  WHERE Reviewer = "${reviewer}"
   GROUP BY Reviewer
   `, (err, data) => {
     if (err || data.length === 0) {
@@ -361,6 +386,7 @@ module.exports = {
   author,
   random,
   car,
+  car_reviews,
   reviewer,
   albums,
   album_songs,

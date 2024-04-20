@@ -89,14 +89,33 @@ const car = async function(req, res) {
   });
 }
 
+
 // Route 4: GET /album/:album_id
-const album = async function(req, res) {
+const reviewer = async function(req, res) {
   // TODO (TASK 5): implement a route that given a album_id, returns all information about the album
-  const album_id = req.params.album_id;
+  const reviewer = req.params.reviewer_name;
   connection.query(`
   SELECT *
-  FROM Albums
-  WHERE album_id = "${album_id}"
+  FROM Reviews
+  WHERE Reviewer = "${reviewer}"
+  `, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data[0]);
+    }
+  });
+}
+
+const reviewer_avg = async function(req, res) {
+  // TODO (TASK 5): implement a route that given a album_id, returns all information about the album
+  const reviewer = req.params.reviewer_name;
+  connection.query(`
+  SELECT AVG(Rating)
+  FROM Reviews
+  WHERE Reviewer = ${reviewer}
+  GROUP BY Reviewer
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
@@ -233,73 +252,76 @@ const top_albums = async function(req, res) {
   }
 }
 
-// Route 9: GET /search_albums
-const search_songs = async function(req, res) {
-  // TODO (TASK 12): return all songs that match the given search query with parameters defaulted to those specified in API spec ordered by title (ascending)
-  // Some default parameters have been provided for you, but you will need to fill in the rest
-  const title = req.query.title ?? '';
-  const durationLow = req.query.duration_low ?? 60;
-  const durationHigh = req.query.duration_high ?? 660;
-  const playsLow = req.query.plays_low ?? 0;
-  const playsHigh = req.query.plays_high ?? 1100000000;
-  const danceabilityLow = req.query.danceability_low ?? 0;
-  const danceabilityHigh = req.query.danceability_high ?? 1;
-  const energyLow = req.query.energy_low ?? 0;
-  const energyHigh = req.query.energy_high ?? 1;
-  const valenceLow = req.query.valence_low ?? 0;
-  const valenceHigh = req.query.valence_high ?? 1;
-  const explicit = req.query.explicit === 'true' ? 1 : 0;
+// Route 9: GET /search_cars
+const search_cars = async function(req, res) {
+
+  const make = req.query.make ?? '';
+  const model = req.query.model ?? '';
+  const priceLow = req.query.price_low ?? 0;
+  const priceHigh = req.query.price_high ?? 10000000;
+  const mileageLow = req.query.mileage_low ?? 0;
+  const mileageHigh = req.query.mileage_high ?? 1000000;
+  const mpgLow = req.query.mpg_low ?? 0;
+  const year = req.query.year ?? 0;
+
+  const accident = req.query.accident === 'true' ? 1 : 0;
+  const oneOwner = req.query.one_owner === 'true' ? 1 : 0;
+
+  const page = req.query.page;
+  const pageSize = req.query.page_size ?? 10;
+  const disp = (page - 1) * pageSize;
 
   qry = `
-  SELECT s.song_id, a.album_id, s.title, s.number, s.duration, s.plays, 
-    s.danceability, s.energy, s.valence, s.tempo, s.key_mode, s.explicit
-  FROM Albums a
-  JOIN Songs s ON a.album_id = s.album_id
-  WHERE s.duration BETWEEN ${durationLow} AND ${durationHigh}
-    AND s.plays BETWEEN ${playsLow} AND ${playsHigh}
-    AND s.danceability BETWEEN ${danceabilityLow} AND ${danceabilityHigh}
-    AND s.energy BETWEEN ${energyLow} AND ${energyHigh}
-    AND s.valence BETWEEN ${valenceLow} AND ${valenceHigh}
-    AND s.explicit <= ${explicit}
+  SELECT *
+  FROM UsedCars
+  WHERE Price BETWEEN ${priceLow} AND ${priceHigh}
+    AND Mileage BETWEEN ${mileageLow} AND ${mileageHigh}
+    AND Accidents <= ${accident}
+    AND One_owner <= ${oneOwner}
+    AND MPG > ${mpgLow}
+    AND Year = ${year}
   `;
-
-  if (title === '') {
-    qry += `ORDER BY s.title`
-    connection.query(
-      qry, (err, data) => {
-        if (err) {
-          console.log(err);
-          res.json({});
-        } else {
-          res.json(data);
-        }
-      }
-    );
-  } else {
-    qry += `  AND s.title LIKE '%${title}%'
-    ORDER BY s.title
+  if (make === '' && model === '') {
+    qry += `ORDER BY Make, Model`
+  } else if (model === '') {
+    qry += `  AND Model LIKE '%${model}%'
+    ORDER BY Make, Model
     `
-    connection.query(
-      qry, (err, data) => {
-        if (err) {
-          console.log(err);
-          res.json({});
-        } else {
-          res.json(data);
-        }
-      }
-    );
+  } else if (make === '') {
+    qry += `  AND Make LIKE '%${make}%'
+    ORDER BY Make, Model
+    `
+  } else {
+    qry += `  AND Make LIKE '%${make}%'
+    AND Model LIKE '%${model}%'
+    ORDER BY Make, Model
+    `
   }
+  if (page) {
+    qry += `LIMIT ${pageSize} OFFSET ${disp}`
+  }
+  connection.query(
+    qry, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    }
+  );
 }
+
 
 module.exports = {
   author,
   random,
   car,
-  album,
+  reviewer,
   albums,
   album_songs,
   top_songs,
   top_albums,
-  search_songs,
+  search_cars,
+  reviewer_avg
 }

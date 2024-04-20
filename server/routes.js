@@ -71,15 +71,9 @@ const random = async function(req, res) {
   });
 }
 
-/********************************
- * BASIC SONG/ALBUM INFO ROUTES *
- ********************************/
 
-// Route 3: GET /song/:song_id
+// Route 3: GET /car/:car_id
 const car = async function(req, res) {
-  // TODO (TASK 4): implement a route that given a song_id, returns all information about the song
-  // Hint: unlike route 2, you can directly SELECT * and just return data[0]
-  // Most of the code is already written for you, you just need to fill in the query
   const car_id = req.params.car_id;
   connection.query(`
   SELECT *

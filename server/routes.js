@@ -114,6 +114,57 @@ const car_reviews = async function(req, res) {
 }
 
 
+// Route 4: GET /car_reviews/:make/:model
+const car_ratings = async function(req, res) {
+
+  const year = req.query.year ?? 0;
+  qry = `
+  SELECT u.Make, u.Model, AVG(r.Rating)
+  FROM UsedCars u JOIN Reviews r ON u.Make=r.Make AND u.Model=r.Model
+  `;
+  if (year) {
+    qry += `
+    WHERE u.Year = ${year}`
+  }
+  qry += `
+  GROUP BY u.Make, u.Model
+  ORDER BY AVG(r.Rating) DESC
+  `;
+  connection.query(
+    qry, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data);
+    }
+  });
+}
+
+// Route 10: GET /car_efficiency/:make/:model
+const car_efficiency = async function(req, res) {
+  const make = req.params.make;
+  const model = req.params.model;
+  const year = req.query.year ?? 0;
+  qry = `
+  SELECT AVG(MPG)
+  FROM UsedCars
+  WHERE Make = "${make}" AND Model = "${model}"
+  `;
+  if (year) {
+    qry += ` AND Year = ${year}`
+  }
+  connection.query(qry, (err, data) => {
+    if (err || data.length === 0) {
+      console.log(err);
+      res.json({});
+    } else {
+      res.json(data);
+    }
+  });
+}
+
+
 // GET /reviewer/:reviewer
 // fetches all reviews by a given reviewer
 const reviewer = async function(req, res) {
@@ -349,5 +400,7 @@ module.exports = {
   top_songs,
   top_albums,
   search_cars,
-  reviewer_avg
+  reviewer_avg,
+  car_efficiency,
+  car_ratings
 }

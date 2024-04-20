@@ -13,6 +13,9 @@ app.use(cors({
 app.get('/car/:car_id', routes.car);
 app.get('/car_reviews/:make/:model', routes.car_reviews);
 app.get('/search_cars', routes.search_cars);
+app.get('/car_efficiency/:make/:model', routes.car_efficiency);
+app.get('/car_ratings', routes.car_ratings);
+
 app.get('/reviewer/:reviewer_name', routes.reviewer);
 app.get('/reviewer_avg/:reviewer_name', routes.reviewer_avg);
 

@@ -14,7 +14,7 @@ app.get('/car/:car_id', routes.car);
 app.get('/search_cars', routes.search_cars);
 app.get('/reviewer/:reviewer_name', routes.reviewer);
 app.get('/reviewer_avg/:reviewer_name', routes.reviewer_avg);
-
+app.get('/price_estimates/:make/:model', routes.price_estimates);
 
 app.get('/author/:type', routes.author);
 app.get('/random', routes.random);

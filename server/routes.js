@@ -76,15 +76,15 @@ const random = async function(req, res) {
  ********************************/
 
 // Route 3: GET /song/:song_id
-const song = async function(req, res) {
+const car = async function(req, res) {
   // TODO (TASK 4): implement a route that given a song_id, returns all information about the song
   // Hint: unlike route 2, you can directly SELECT * and just return data[0]
   // Most of the code is already written for you, you just need to fill in the query
-  const song_id = req.params.song_id;
+  const car_id = req.params.car_id;
   connection.query(`
   SELECT *
-  FROM Songs
-  WHERE song_id = "${song_id}"
+  FROM UsedCars
+  WHERE Car_Id = "${car_id}"
   `, (err, data) => {
     if (err || data.length === 0) {
       console.log(err);
@@ -240,7 +240,7 @@ const top_albums = async function(req, res) {
 }
 
 // Route 9: GET /search_albums
-const search_cars = async function(req, res) {
+const search_songs = async function(req, res) {
   // TODO (TASK 12): return all songs that match the given search query with parameters defaulted to those specified in API spec ordered by title (ascending)
   // Some default parameters have been provided for you, but you will need to fill in the rest
   const title = req.query.title ?? '';
@@ -301,7 +301,7 @@ const search_cars = async function(req, res) {
 module.exports = {
   author,
   random,
-  song,
+  car,
   album,
   albums,
   album_songs,

@@ -18,6 +18,7 @@ app.get('/car_ratings', routes.car_ratings);
 
 app.get('/reviewer/:reviewer_name', routes.reviewer);
 app.get('/reviewer_avg/:reviewer_name', routes.reviewer_avg);
+app.get('/price_estimates/:make/:model', routes.price_estimates);
 
 app.get('/author/:type', routes.author);
 app.get('/random', routes.random);

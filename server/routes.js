@@ -388,6 +388,50 @@ const search_cars = async function(req, res) {
   );
 }
 
+// Route 10: GET /price_estimates/:make/:model
+const price_estimates = async function(req, res) {
+  const make = req.params.make;
+  const model = req.params.model;
+  const page = req.query.page;
+  const pageSize = req.query.page_size ?? 25;
+  const disp = (page - 1) * pageSize;
+  const year = req.query.year ?? 0;
+
+  if (year) {
+    qry = `
+    SELECT Make, Model, Year, AVG(Price), MAX(Price), MIN(Price)
+    FROM UsedCars
+    WHERE Make LIKE '%${make}%' AND model LIKE '%${model}%' AND year=${year}
+    GROUP BY Make, Model, Year
+    ORDER BY Model
+    `
+  } else {
+    qry = `
+    SELECT Make, Model, Year, AVG(Price), MAX(Price), MIN(Price)
+    FROM UsedCars
+    WHERE Make LIKE '%${make}%' AND model LIKE '%${model}%'
+    GROUP BY Make, Model, Year
+    ORDER BY Model, Year
+    `
+  }
+
+  if (page) {
+    qry += `LIMIT ${pageSize} OFFSET ${disp}`
+  }  
+
+  connection.query(
+    qry, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    }
+  );
+}
+
+
 
 module.exports = {
   author,
@@ -401,6 +445,7 @@ module.exports = {
   top_albums,
   search_cars,
   reviewer_avg,
+  price_estimates,
   car_efficiency,
   car_ratings
 }

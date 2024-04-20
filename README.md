@@ -5,19 +5,19 @@ Provide a user interface to allow users to see the average price of a used car o
 /server
 This folder holds the server application files, tests, and dependencies (as required by Node.js)
 
-● .gitignore: A gitignore file for the Node application
+  ● .gitignore: A gitignore file for the Node application
 
-● config.json: Holds the RDS connection credentials/information and application
+  ● config.json: Holds the RDS connection credentials/information and application
 configuration settings (like port and host)
 
-● package.json: maintains the project dependency tree; defines project properties, scripts,
+  ● package.json: maintains the project dependency tree; defines project properties, scripts,
 etc
 
-● package-lock.json: saves the exact version of each package in the application dependency
+  ● package-lock.json: saves the exact version of each package in the application dependency
 tree for installs and maintenance
 
-● routes.js: Code for all the API routes’ handler functions
+  ● routes.js: Code for all the API routes’ handler functions
 
-● server.js: The code for the routed HTTP application
+  ● server.js: The code for the routed HTTP application
 
 CIS550_ETL.ipynb is a Google Colab notebook that was used to process the databases. 

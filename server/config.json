@@ -1,0 +1,9 @@
+{
+  "rds_host": "cis550-project-db.c7ym09igvtag.us-east-1.rds.amazonaws.com",
+  "rds_port": "3306",
+  "rds_user": "wpha_admin_user",
+  "rds_password": "echoH3lloWorldwPHa!",
+  "rds_db": "PROJ",
+  "server_host": "localhost",
+  "server_port": "8080"
+}

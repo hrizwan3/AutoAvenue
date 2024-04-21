@@ -399,6 +399,50 @@ const car_zscore = async function(req, res) {
 }
 
 
+const hidden_gems = async function(req, res) {
+  const minReviews = req.query.min_reviews ?? 0;
+  const minRating = req.query.min_rating ?? 4;
+  const percBelow = req.query.perc_below ?? 0.1;
+
+  qry = `
+  WITH MarketAveragePrice AS (
+    SELECT Make, Model, AVG(Price) AS AvgPrice
+    FROM UsedCars
+    GROUP BY Make, Model
+ ),
+ DecentlyRated AS (
+    SELECT r.Make, r.Model, r.Year, r.Rating, AVG(Rating) AS AvgRating
+    FROM Reviews r
+    WHERE Rating >= ${minRating}
+    GROUP BY r.Make, r.Model, r.Year
+    HAVING COUNT(r.Review_Id) >= ${minReviews} AND AVG(Rating) >= 3
+ ),
+ UnderpricedCars AS (
+    SELECT u.Car_Id, u.Make, u.Model, u.Year, u.Price, m.AvgPrice AS MarketAvgPrice
+    FROM UsedCars u
+    JOIN MarketAveragePrice m ON u.Make = m.Make AND u.Model = m.Model
+    WHERE u.Price < m.AvgPrice * ${1-percBelow}
+ )
+ SELECT u.Car_Id, dr.Make, dr.Model, dr.Year, dr.Rating, dr.AvgRating AS ModelAvgRating, u.Price, u.MarketAvgPrice,
+        (u.MarketAvgPrice - u.Price) AS PriceBelowMarket
+ FROM DecentlyRated dr
+ JOIN UnderpricedCars u ON dr.Make = u.Make AND dr.Model = u.Model AND dr.Year = u.Year
+ ORDER BY dr.Rating DESC, dr.AvgRating DESC, PriceBelowMarket DESC;
+  `;
+
+  connection.query(
+    qry, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    }
+  );
+
+}
+
 module.exports = {
   car,
   car_reviews,
@@ -411,5 +455,6 @@ module.exports = {
   car_rankings,
   car_safety_and_rankings,
   car_zscore,
-  car_of_the_day
+  car_of_the_day,
+  hidden_gems
 }

@@ -431,6 +431,130 @@ const price_estimates = async function(req, res) {
   );
 }
 
+// Route 11: GET /car_rankings
+const car_rankings = async function(req, res) {
+  const count = req.query.count ?? 10;
+  const avgMileage = req.query.avg_mileage ?? 10000000000;
+  const pctAccidents = req.query.pct_accidents ?? 1;
+
+  qry = `
+  WITH RankedModels AS (
+    SELECT
+        u.Make,
+        u.Model,
+        AVG(r.Rating) AS AverageRating,
+        AVG(u.Price) AS AveragePrice,
+        AVG(u.Mileage) AS AverageMileage,
+        SUM(CASE WHEN u.Accident = 1.0 THEN 1 ELSE 0 END) * 100.0 / COUNT(u.Accident) AS PercentageAccidents,
+        RANK() OVER (ORDER BY AVG(r.Rating) DESC, AVG(u.Price)) AS Ranking
+    FROM
+        UsedCars u
+    JOIN
+        Reviews r ON u.Make = r.Make AND u.Model = r.Model
+    GROUP BY
+        u.Make, u.Model
+    ),
+    ReviewThreshold AS (
+        SELECT Make, Model, COUNT(*) as NumReviews
+        FROM Reviews r
+        GROUP BY Make, Model
+        HAVING COUNT(*) >= ${count}
+    )
+    SELECT rm.Make, rm.Model, rm.AverageRating, rm.AveragePrice, rm.AverageMileage, rm.PercentageAccidents, rt.NumReviews, rm.Ranking
+    FROM RankedModels rm JOIN ReviewThreshold rt ON rm.Make=rt.Make AND rm.Model=rt.Model
+    WHERE rm.AverageMileage < ${avgMileage} AND rm.PercentageAccidents < ${pctAccidents}
+    ORDER BY Ranking, AverageRating DESC, AveragePrice;
+  `
+  connection.query(
+    qry, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    }
+  );
+}
+
+const car_safety_and_rankings = async function(req, res) {
+  const avgRating = req.query.avg_rating ?? 1.0;
+
+  qry = `
+  WITH ModelRatings AS (
+    SELECT rc.Make, rc.Model, rc.Year, AVG(rc.Rating) AS AvgRating
+    FROM
+        (SELECT r.Make, r.Model, r.Year, r.Rating
+         FROM Reviews r
+         WHERE EXISTS (
+             SELECT 1 FROM UsedCars u
+             WHERE u.Make = r.Make AND u.Model = r.Model AND u.Year = r.Year AND u.One_owner = 1.0
+         )) rc
+    GROUP BY rc.Make, rc.Model, rc.Year
+    ),
+    HighlyRatedModels AS (
+        SELECT
+            mr.Make, mr.Model, AVG(mr.AvgRating) AS OverallAvgRating
+        FROM ModelRatings mr
+        GROUP BY mr.Make, mr.Model
+        HAVING AVG(mr.AvgRating) > ${avgRating}
+    )
+    SELECT
+        u.Make, u.Model, AVG(u.Price) AS AvgPrice,
+        AVG(u.Mileage) AS AvgMileage,
+        SUM(CASE WHEN u.Accident = 1.0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS PercentAccidents,
+        COUNT(CASE WHEN r.Rating >= 4 THEN 1 END) AS HighRatingsCount
+    FROM UsedCars u
+    JOIN Reviews r ON u.Make = r.Make AND u.Model = r.Model AND u.Year = r.Year
+    JOIN HighlyRatedModels hrm ON u.Make = hrm.Make AND u.Model = hrm.Model
+    WHERE u.One_owner = 1.0
+    GROUP BY u.Make, u.Model
+    ORDER BY PercentAccidents, AvgPrice DESC;
+  `
+  connection.query(
+    qry, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    }
+  );
+}
+
+const car_zscore = async function(req, res) {
+  const car_id = req.params.car_id;
+  qry = `
+  WITH CurrentCar AS (
+    SELECT Car_Id, Make, Model, Year, Price
+    FROM UsedCars
+    WHERE Car_Id = ${car_id}
+  ),
+  ComparableSales AS (
+      SELECT c.Model, c.Year, AVG(u.Price) AS Avg_Price, STDDEV(u.Price) AS Price_StdDev
+      FROM UsedCars u
+      JOIN CurrentCar c ON u.Make = c.Make AND u.Model = c.Model
+          AND u.Year BETWEEN c.Year - 3 AND c.Year + 3
+          AND u.Car_Id != c.Car_Id 
+      GROUP BY c.Model, c.Year
+  )
+  SELECT cc.Car_Id, cc.Make, cc.Model, cc.Year, cc.Price, cs.Avg_Price, cs.Price_StdDev,
+        (cc.Price - cs.Avg_Price) / cs.Price_StdDev AS Z_Score
+  FROM CurrentCar cc
+  JOIN ComparableSales cs ON cc.Model = cs.Model AND cc.Year = cs.Year
+  `;
+  connection.query(
+    qry, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    }
+  );
+}
 
 
 module.exports = {
@@ -447,5 +571,8 @@ module.exports = {
   reviewer_avg,
   price_estimates,
   car_efficiency,
-  car_ratings
+  car_ratings,
+  car_rankings,
+  car_safety_and_rankings,
+  car_zscore
 }

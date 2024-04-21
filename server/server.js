@@ -20,6 +20,7 @@ app.get('/car_rankings', routes.car_rankings);
 app.get('/car_safety_and_rankings', routes.car_safety_and_rankings);
 app.get('/car_zscore/:car_id', routes.car_zscore);
 app.get('/hidden_gems', routes.hidden_gems);
+app.get('/car_reliability', routes.car_reliability);
 
 app.get('/reviewer/:reviewer_name', routes.reviewer);
 app.get('/reviewer_avg/:reviewer_name', routes.reviewer_avg);

@@ -409,25 +409,25 @@ const hidden_gems = async function(req, res) {
     SELECT Make, Model, AVG(Price) AS AvgPrice
     FROM UsedCars
     GROUP BY Make, Model
- ),
- DecentlyRated AS (
-    SELECT r.Make, r.Model, r.Year, r.Rating, AVG(Rating) AS AvgRating
-    FROM Reviews r
-    WHERE Rating >= ${minRating}
-    GROUP BY r.Make, r.Model, r.Year
-    HAVING COUNT(r.Review_Id) >= ${minReviews} AND AVG(Rating) >= 3
- ),
- UnderpricedCars AS (
-    SELECT u.Car_Id, u.Make, u.Model, u.Year, u.Price, m.AvgPrice AS MarketAvgPrice
-    FROM UsedCars u
-    JOIN MarketAveragePrice m ON u.Make = m.Make AND u.Model = m.Model
-    WHERE u.Price < m.AvgPrice * ${1-percBelow}
- )
- SELECT u.Car_Id, dr.Make, dr.Model, dr.Year, dr.Rating, dr.AvgRating AS ModelAvgRating, u.Price, u.MarketAvgPrice,
-        (u.MarketAvgPrice - u.Price) AS PriceBelowMarket
- FROM DecentlyRated dr
- JOIN UnderpricedCars u ON dr.Make = u.Make AND dr.Model = u.Model AND dr.Year = u.Year
- ORDER BY dr.Rating DESC, dr.AvgRating DESC, PriceBelowMarket DESC;
+  ),
+  DecentlyRated AS (
+      SELECT r.Make, r.Model, r.Year, r.Rating, AVG(Rating) AS AvgRating
+      FROM Reviews r
+      WHERE Rating >= ${minRating}
+      GROUP BY r.Make, r.Model, r.Year
+      HAVING COUNT(r.Review_Id) >= ${minReviews} AND AVG(Rating) >= 3
+  ),
+  UnderpricedCars AS (
+      SELECT u.Car_Id, u.Make, u.Model, u.Year, u.Price, m.AvgPrice AS MarketAvgPrice
+      FROM UsedCars u
+      JOIN MarketAveragePrice m ON u.Make = m.Make AND u.Model = m.Model
+      WHERE u.Price < m.AvgPrice * ${1-percBelow}
+  )
+  SELECT u.Car_Id, dr.Make, dr.Model, dr.Year, dr.Rating, dr.AvgRating AS ModelAvgRating, u.Price, u.MarketAvgPrice,
+          (u.MarketAvgPrice - u.Price) AS PriceBelowMarket
+  FROM DecentlyRated dr
+  JOIN UnderpricedCars u ON dr.Make = u.Make AND dr.Model = u.Model AND dr.Year = u.Year
+  ORDER BY dr.Rating DESC, dr.AvgRating DESC, PriceBelowMarket DESC;
   `;
 
   connection.query(
@@ -443,6 +443,50 @@ const hidden_gems = async function(req, res) {
 
 }
 
+const car_reliability = async function(req, res) {
+  qry = `
+  WITH ReliabilityData AS (
+    SELECT u.Make, u.Model,
+        AVG(r.Rating) AS AverageRating,
+        SUM(CASE WHEN u.Accident = 1 THEN 1 ELSE 0 END) AS TotalAccidents,
+        COUNT(u.Car_Id) AS TotalCars
+    FROM UsedCars u
+    JOIN Reviews r ON u.Make = r.Make AND u.Model = r.Model
+    GROUP BY u.Make, u.Model
+  ),
+  ReliabilityScore AS (
+      SELECT Make, Model,
+          AverageRating,
+          (TotalAccidents * 100.0 / TotalCars) AS PercAccidents
+      FROM ReliabilityData
+  )
+  SELECT Make, Model, AverageRating, PercAccidents,
+      CASE
+          WHEN PercAccidents < 10 AND AverageRating > 4 THEN 'High'
+          WHEN PercAccidents < 20 AND AverageRating > 3 THEN 'Moderate'
+          ELSE 'Low'
+      END AS ReliabilityLevel
+  FROM ReliabilityScore
+  ORDER BY
+      CASE ReliabilityLevel
+          WHEN 'High' THEN 1
+          WHEN 'Moderate' THEN 2
+          WHEN 'Low' THEN 3
+      END,
+      AverageRating DESC;
+  `;
+  connection.query(
+    qry, (err, data) => {
+      if (err) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    }
+  );
+}
+
 module.exports = {
   car,
   car_reviews,
@@ -456,5 +500,6 @@ module.exports = {
   car_safety_and_rankings,
   car_zscore,
   car_of_the_day,
-  hidden_gems
+  hidden_gems,
+  car_reliability
 }

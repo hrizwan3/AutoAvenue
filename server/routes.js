@@ -1,8 +1,6 @@
 const mysql = require('mysql')
 const config = require('./config.json')
 
-// Creates MySQL connection using database credential provided in config.json
-// Do not edit. If the connection fails, make sure to check that config.json is filled out correctly
 const connection = mysql.createConnection({
   host: config.rds_host,
   user: config.rds_user,
@@ -12,12 +10,7 @@ const connection = mysql.createConnection({
 });
 connection.connect((err) => err && console.log(err));
 
-/******************
- * WARM UP ROUTES *
- ******************/
-
-
-// Route 3: GET /car/:car_id
+// Route 1: GET /car/:car_id
 const car = async function(req, res) {
   const car_id = req.params.car_id;
   connection.query(`
@@ -34,6 +27,7 @@ const car = async function(req, res) {
   });
 }
 
+// Route 2: GET /car_of_the_day
 const car_of_the_day = async function(req, res) {
   connection.query(`
   SELECT *
@@ -52,7 +46,7 @@ const car_of_the_day = async function(req, res) {
   });
 }
 
-// Route 4: GET /car_reviews/:make/:model
+// Route 3: GET /car_reviews/:make/:model
 const car_reviews = async function(req, res) {
   const make = req.params.make;
   const model = req.params.model;
@@ -77,7 +71,7 @@ const car_reviews = async function(req, res) {
 }
 
 
-// Route 4: GET /car_reviews/:make/:model
+// Route 4: GET /car_ratings
 const car_ratings = async function(req, res) {
 
   const year = req.query.year ?? 0;
@@ -104,7 +98,7 @@ const car_ratings = async function(req, res) {
   });
 }
 
-// Route 10: GET /car_efficiency/:make/:model
+// Route 5: GET /car_efficiency/:make/:model
 const car_efficiency = async function(req, res) {
   const make = req.params.make;
   const model = req.params.model;
@@ -128,7 +122,7 @@ const car_efficiency = async function(req, res) {
 }
 
 
-// GET /reviewer/:reviewer
+// Route 6: GET /reviewer/:reviewer
 // fetches all reviews by a given reviewer
 const reviewer = async function(req, res) {
   const reviewer = req.params.reviewer_name;
@@ -146,7 +140,7 @@ const reviewer = async function(req, res) {
   });
 }
 
-// GET /reviewer_avg/:reviewer
+// Route 7: GET /reviewer_avg/:reviewer_name
 // fetches the average rating of a given reviewer
 const reviewer_avg = async function(req, res) {
   const reviewer = req.params.reviewer_name;
@@ -165,12 +159,7 @@ const reviewer_avg = async function(req, res) {
   });
 }
 
-
-/************************
- * ADVANCED INFO ROUTES *
- ************************/
-
-// Route 9: GET /search_cars
+// Route 8: GET /search_cars
 const search_cars = async function(req, res) {
 
   const make = req.query.make ?? '';
@@ -230,7 +219,7 @@ const search_cars = async function(req, res) {
   );
 }
 
-// Route 10: GET /price_estimates/:make/:model
+// Route 9: GET /price_estimates/:make/:model
 const price_estimates = async function(req, res) {
   const make = req.params.make;
   const model = req.params.model;
@@ -273,7 +262,7 @@ const price_estimates = async function(req, res) {
   );
 }
 
-// Route 11: GET /car_rankings
+// Route 10: GET /car_rankings
 const car_rankings = async function(req, res) {
   const count = req.query.count ?? 10;
   const avgMileage = req.query.avg_mileage ?? 10000000000;
@@ -319,6 +308,7 @@ const car_rankings = async function(req, res) {
   );
 }
 
+// Route 11: GET /car_safety_and_rankings
 const car_safety_and_rankings = async function(req, res) {
   const avgRating = req.query.avg_rating ?? 1.0;
 
@@ -365,6 +355,7 @@ const car_safety_and_rankings = async function(req, res) {
   );
 }
 
+// Route 12: GET /car_zscore/:car_id
 const car_zscore = async function(req, res) {
   const car_id = req.params.car_id;
   qry = `
@@ -398,7 +389,7 @@ const car_zscore = async function(req, res) {
   );
 }
 
-
+// Route 13: GET /hidden_gems
 const hidden_gems = async function(req, res) {
   const minReviews = req.query.min_reviews ?? 0;
   const minRating = req.query.min_rating ?? 4;
@@ -443,6 +434,7 @@ const hidden_gems = async function(req, res) {
 
 }
 
+// Route 14: GET /car_reliability
 const car_reliability = async function(req, res) {
   qry = `
   WITH ReliabilityData AS (

@@ -22,10 +22,6 @@ export default function HiddenGemsPage() {
       .catch(err => console.error('Error fetching hidden gems:', err));
   };
 
-  useEffect(() => {
-    fetchData();
-  }, [minReviews, minRating, percBelow]);
-
   const columns = [
     // { field: 'Car_Id', headerName: 'Car ID', width: 120 },
     // { field: 'Make', headerName: 'Make', width: 150 },
@@ -79,7 +75,7 @@ export default function HiddenGemsPage() {
           />
         </Grid>
         <Grid item xs={12}>
-          <Button onClick={fetchData} variant="contained" style={{ marginTop: 20 }}>
+          <Button onClick={() => fetchData()} variant="contained" style={{ marginTop: 20 }}>
             Search
           </Button>
         </Grid>

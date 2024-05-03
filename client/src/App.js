@@ -1,48 +1,48 @@
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import { CssBaseline, ThemeProvider } from '@mui/material'
-import { indigo, amber } from '@mui/material/colors'
 import { createTheme } from "@mui/material/styles";
 
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
-import AlbumsPage from './pages/SearchPage';
-import SongsPage from './pages/HiddenGemsPage';
-import AlbumInfoPage from './pages/ComparePage'
+import SearchPage from './pages/SearchPage';
+import HiddenGemsPage from './pages/HiddenGemsPage';
+import ComparePage from './pages/ComparePage'
+import ReviewsPage from './pages/ReviewsPage'
 
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0F0F0F', // Black Onyx
+      main: '#0d47a1',
     },
     secondary: {
-      main: '#D4AF37', // Gold
+      main: '#9c27b0',
     },
     background: {
-      default: '#F0EAD6', // Pearl White
-    },
-    text: {
-      primary: '#0F0F0F',
-      secondary: '#D4AF37',
-    },
+      default: '#cfd8dc',
+    }
   },
   typography: {
-    fontFamily: 'Roboto, Arial, sans-serif',
-    fontSize: 14,
+    fontFamily: '"Roboto", "Helvetica", "Arial", sans-serif',
     h1: {
-      fontWeight: 300,
-      fontSize: '6rem',
-      letterSpacing: '-0.01562em',
+      fontSize: '2.4rem',
     },
-    h2: {
-      fontWeight: 300,
-      fontSize: '3.75rem',
-      letterSpacing: '-0.00833em',
-    },
-    button: {
-      fontWeight: 500,
+    body1: {
+      fontSize: '1.1rem',
     },
   },
+  components: {
+    MuiButton: {
+      styleOverrides: {
+        root: {
+          borderRadius: 4, // More subtle rounded corners for a refined look
+          textTransform: 'none', // Avoids capitalization for a more elegant appearance
+          fontSize: '0.9rem', // Smaller button text for a more understated design
+        }
+      }
+    }
+  }
 });
+
 
 export default function App() {
   return (

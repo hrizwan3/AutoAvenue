@@ -93,7 +93,7 @@ export default function SongsPage() {
             step={10}
             onChange={(e, newValue) => setDuration(newValue)}
             valueLabelDisplay='auto'
-            // valueLabelFormat={value => <div>{formatDuration(value)}</div>}
+            valueLabelFormat={value => <div>{(value)}</div>}
           />
         </Grid>
         <Grid item xs={6}>

@@ -41,7 +41,11 @@ const car_of_the_day = async function(req, res) {
       console.log(err);
       res.json({});
     } else {
-      res.json(data[0]);
+      res.json({
+        make: data[0].Make,
+        model: data[0].Model,
+        year: data[0].Year
+      });
     }
   });
 }

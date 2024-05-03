@@ -12,13 +12,13 @@ import ReviewsPage from './pages/ReviewsPage'
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#0d47a1',
+      main: '#212121',
     },
     secondary: {
       main: '#9c27b0',
     },
     background: {
-      default: '#cfd8dc',
+      default: '#b0bec5',
     }
   },
   typography: {

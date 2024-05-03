@@ -32,10 +32,10 @@ export default function NavBar() {
       <Container maxWidth='xl'>
         <Toolbar disableGutters>
           <NavText href='/' text='AutoAvenue' isMain />
-          <NavText href='/search' text='Search Cars' />
-          <NavText href='/compare' text='Compare' />
-          <NavText href='/reviews' text='Reviews' />
-          <NavText href='/hidden_gems' text='Hidden Gems' />
+          <NavText href='/search' text='SEARCH' />
+          <NavText href='/compare' text='COMPARE' />
+          <NavText href='/reviews' text='REVIEWS' />
+          <NavText href='/hidden_gems' text='GEMS' />
         </Toolbar>
       </Container>
     </AppBar>

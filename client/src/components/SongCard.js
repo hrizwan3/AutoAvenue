@@ -3,7 +3,6 @@ import { Box, Button, ButtonGroup, Modal } from '@mui/material';
 import { ResponsiveContainer, BarChart, Bar, XAxis, YAxis, RadarChart, Radar, PolarGrid, PolarAngleAxis, PolarRadiusAxis } from 'recharts';
 import { NavLink } from 'react-router-dom';
 
-import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
 // SongCard is a modal (a common example of a modal is a dialog window).
@@ -63,7 +62,7 @@ export default function SongCard({ songId, handleClose }) {
         <h2>Album:&nbsp;
           <NavLink to={`/albums/${albumData.album_id}`}>{albumData.title}</NavLink>
         </h2>
-        <p>Duration: {formatDuration(songData.duration)}</p>
+        <p>Duration: {(songData.duration)}</p>
         <p>Tempo: {songData.tempo} bpm</p>
         <p>Key: {songData.key_mode}</p>
         <ButtonGroup>

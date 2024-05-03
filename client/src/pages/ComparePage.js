@@ -1,78 +1,76 @@
 import { useEffect, useState } from 'react';
+import { Button, Checkbox, Container, FormControlLabel, Grid, TextField, Slider } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 import { useParams } from 'react-router-dom';
-import { Container, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
-import SongCard from '../components/CarCard';
+
+import CarCard from '../components/CarCard';
 const config = require('../config.json');
 
-export default function AlbumInfoPage() {
-  const { album_id } = useParams();
+export default function SearchCarsPage() {
+  const [pageSize, setPageSize] = useState(10);
+  const [data, setData] = useState([]);
+  const [selectedCarId, setSelectedCarId] = useState(null);
 
-  const [songData, setSongData] = useState([{}]); // default should actually just be [], but empty object element added to avoid error in template code
-  const [albumData, setAlbumData] = useState([]);
+  const [make, setMake] = useState('');
+  const [model, setModel] = useState('');
+  const [mileage, setMileage] = useState([0, 500000]);
+  const [year, setYear] = useState([2000, 2020]);
+  const [price, setPrice] = useState([5000, 75000]);
+  const [mpg, setMpg] = useState([30, 50]);
+  const [isOne, setIsOne] = useState(false);
+  const [noAccident, setNoAccident] = useState(false);
+  const { car_id1 } = useParams();
 
-  const [selectedSongId, setSelectedSongId] = useState(null);
+  const [carData, setCarData] = useState([]);
+
 
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/album/${album_id}`)
+    fetch(`http://${config.server_host}:${config.server_port}/search_cars`)
       .then(res => res.json())
-      .then(resJson => setAlbumData(resJson));
+      .then(resJson => setCarData(resJson));
+  }, []);
 
-    fetch(`http://${config.server_host}:${config.server_port}/album_songs/${album_id}`)
+  const search = () => {
+
+    fetch(`http://${config.server_host}:${config.server_port}/car/${car_id1}`)
       .then(res => res.json())
-      .then(resJson => setSongData(resJson));
-  }, [album_id]);
+      .then(resJson => setCarData(resJson));
+  }
+
+  const columns = [
+    { field: 'make', headerName: 'Make', width: 150 },
+    { field: 'model', headerName: 'Model', width: 150 },
+    { field: 'year', headerName: 'Year'},
+    { field: 'price', headerName: 'Price'},
+    { field: 'mileage', headerName: 'Mileage'},
+    { field: 'mpg', headerName: 'MPG'},
+    { field: 'isAccident', headerName: 'Accident', renderCell: (params) => (
+      params.value ? "Yes" : "No"
+  ) },
+    { field: 'isOne', headerName: 'One Owner', renderCell: (params) => (
+        params.value ? "Yes" : "No"
+    ) }
+  ]
 
   return (
     <Container>
-      {selectedSongId && <SongCard songId={selectedSongId} handleClose={() => setSelectedSongId(null)} />}
-      <Stack direction='row' justify='center'>
-        <img
-          key={albumData.album_id}
-          src={albumData.thumbnail_url}
-          alt={`${albumData.title} album art`}
-          style={{
-            marginTop: '40px',
-            marginRight: '40px',
-            marginBottom: '40px'
-          }}
-        />
-        <Stack>
-          <h1 style={{ fontSize: 64 }}>{albumData.title}</h1>
-          <h2>Released: {(albumData.release_date)}</h2>
-        </Stack>
-      </Stack>
-      <TableContainer>
-        <Table>
-          <TableHead>
-            <TableRow>
-              <TableCell key='#'>#</TableCell>
-              <TableCell key='Title'>Title</TableCell>
-              <TableCell key='Plays'>Plays</TableCell>
-              <TableCell key='Duration'>Duration</TableCell>
-            </TableRow>
-          </TableHead>
-          <TableBody>
-            {
-              // TODO (TASK 23): render the table content by mapping the songData array to <TableRow> elements
-              // Hint: the skeleton code for the very first row is provided for you. Fill out the missing information and then use a map function to render the rest of the rows.
-              // Hint: it may be useful to refer back to LazyTable.js
-              songData.map((row, idx) =>
-                <TableRow key={idx}>
-                <TableCell key='#'>{songData[idx].number}</TableCell>
-                <TableCell key='Title'>
-                  <Link onClick={() => setSelectedSongId(songData[idx].song_id)}>
-                    {songData[idx].title}
-                  </Link>
-                </TableCell>
-                <TableCell key='Plays'>{songData[idx].plays}</TableCell>
-                <TableCell key='Duration'>{(songData[idx].duration)}</TableCell>
-              </TableRow>
-            )
-            }
-          </TableBody>
-        </Table>
-      </TableContainer>
+      {selectedCarId && <CarCard carId={selectedCarId} handleClose={() => setSelectedCarId(null)} />}
+      <h2>Search Cars</h2>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <TextField label='Car ID' value={car_id1} onChange={(e) => setMake(e.target.value)} fullWidth/>
+        </Grid>
+      </Grid>
+      <h2>Results</h2>
+      <DataGrid
+        rows={data}
+        columns={columns}
+        pageSize={pageSize}
+        rowsPerPageOptions={[5, 10, 25]}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        autoHeight
+      />
     </Container>
   );
 }

@@ -3,7 +3,6 @@ import { Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, Text
 import { DataGrid } from '@mui/x-data-grid';
 
 import SongCard from '../components/SongCard';
-import { formatDuration } from '../helpers/formatter';
 const config = require('../config.json');
 
 export default function SongsPage() {
@@ -94,7 +93,7 @@ export default function SongsPage() {
             step={10}
             onChange={(e, newValue) => setDuration(newValue)}
             valueLabelDisplay='auto'
-            valueLabelFormat={value => <div>{formatDuration(value)}</div>}
+            // valueLabelFormat={value => <div>{formatDuration(value)}</div>}
           />
         </Grid>
         <Grid item xs={6}>

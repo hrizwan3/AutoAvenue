@@ -3,7 +3,7 @@ import { useParams } from 'react-router-dom';
 import { Container, Link, Stack, Table, TableBody, TableCell, TableContainer, TableHead, TableRow } from '@mui/material';
 
 import SongCard from '../components/SongCard';
-import { formatDuration, formatReleaseDate } from '../helpers/formatter';
+// import { formatDuration, formatReleaseDate } from '../helpers/formatter';
 const config = require('../config.json');
 
 export default function AlbumInfoPage() {
@@ -40,7 +40,7 @@ export default function AlbumInfoPage() {
         />
         <Stack>
           <h1 style={{ fontSize: 64 }}>{albumData.title}</h1>
-          <h2>Released: {formatReleaseDate(albumData.release_date)}</h2>
+          {/* <h2>Released: {formatReleaseDate(albumData.release_date)}</h2> */}
         </Stack>
       </Stack>
       <TableContainer>
@@ -67,7 +67,7 @@ export default function AlbumInfoPage() {
                   </Link>
                 </TableCell>
                 <TableCell key='Plays'>{songData[idx].plays}</TableCell>
-                <TableCell key='Duration'>{formatDuration(songData[idx].duration)}</TableCell>
+                {/* <TableCell key='Duration'>{formatDuration(songData[idx].duration)}</TableCell> */}
               </TableRow>
             )
             }

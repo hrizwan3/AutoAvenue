@@ -207,24 +207,29 @@ const search_cars = async function(req, res) {
     AND Year BETWEEN ${yearLow} AND ${yearHigh}
   `;
   if (noAccident) {
-    qry += `AND Accident = 0 `
+    qry += ` AND Accident = 0`
   }
 
   if (oneOwner) {
-    qry += `AND One_owner = 1 `
+    qry += ` AND One_owner = 1`
   }
+
   if (make === '' && model === '') {
     qry += `ORDER BY Make, Model`
   } else if (model === '') {
-    qry += `  AND Model LIKE '${model}%'
+    qry += `
+      AND Model LIKE '${model}%'
     ORDER BY Make, Model
     `
   } else if (make === '') {
-    qry += `  AND Make LIKE '${make}%'
+    qry += 
+    `
+     AND Make LIKE '${make}%'
     ORDER BY Make, Model
     `
   } else {
-    qry += `  AND Make LIKE '${make}%'
+    qry += `
+     AND Make LIKE '${make}%'
     AND Model LIKE '${model}%'
     ORDER BY Make, Model
     `

@@ -54,7 +54,7 @@ const car_reviews = async function(req, res) {
   qry = `
   SELECT Reviewer, Title, Review, Rating
   FROM Reviews
-  WHERE Make LIKE "%${make}%" AND Model LIKE "${model}%"
+  WHERE Make LIKE "${make}%" AND Model LIKE "${model}%"
   `;
   if (year) {
     qry += ` AND Year = ${year}`
@@ -191,16 +191,16 @@ const search_cars = async function(req, res) {
   if (make === '' && model === '') {
     qry += `ORDER BY Make, Model`
   } else if (model === '') {
-    qry += `  AND Model LIKE '%${model}%'
+    qry += `  AND Model LIKE '${model}%'
     ORDER BY Make, Model
     `
   } else if (make === '') {
-    qry += `  AND Make LIKE '%${make}%'
+    qry += `  AND Make LIKE '${make}%'
     ORDER BY Make, Model
     `
   } else {
-    qry += `  AND Make LIKE '%${make}%'
-    AND Model LIKE '%${model}%'
+    qry += `  AND Make LIKE '${make}%'
+    AND Model LIKE '${model}%'
     ORDER BY Make, Model
     `
   }
@@ -232,7 +232,7 @@ const price_estimates = async function(req, res) {
     qry = `
     SELECT Make, Model, Year, AVG(Price), MAX(Price), MIN(Price)
     FROM UsedCars
-    WHERE Make LIKE '%${make}%' AND model LIKE '%${model}%' AND year=${year}
+    WHERE Make LIKE '${make}%' AND model LIKE '${model}%' AND year=${year}
     GROUP BY Make, Model, Year
     ORDER BY Model
     `
@@ -240,7 +240,7 @@ const price_estimates = async function(req, res) {
     qry = `
     SELECT Make, Model, Year, AVG(Price), MAX(Price), MIN(Price)
     FROM UsedCars
-    WHERE Make LIKE '%${make}%' AND model LIKE '%${model}%'
+    WHERE Make LIKE '${make}%' AND model LIKE '${model}%'
     GROUP BY Make, Model, Year
     ORDER BY Model, Year
     `

@@ -1,45 +1,150 @@
 import { useEffect, useState } from 'react';
-import { Box, Container } from '@mui/material';
-import { NavLink } from 'react-router-dom';
+import { Button, Checkbox, Container, FormControlLabel, Grid, TextField, Slider } from '@mui/material';
+import { DataGrid } from '@mui/x-data-grid';
 
+import CarCard from '../components/CarCard';
 const config = require('../config.json');
 
-export default function AlbumsPage() {
-  const [albums, setAlbums] = useState([]);
+export default function SearchCarsPage() {
+  const [pageSize, setPageSize] = useState(10);
+  const [data, setData] = useState([]);
+  const [selectedCarId, setSelectedCarId] = useState(null);
+
+  const [make, setMake] = useState('');
+  const [model, setModel] = useState('');
+  const [mileage, setMileage] = useState([0, 500000]);
+  const [year, setYear] = useState([2000, 2020]);
+  const [price, setPrice] = useState([5000, 75000]);
+  const [mpg, setMpg] = useState([30, 50]);
+  const [isOne, setIsOne] = useState(false);
+  const [noAccident, setNoAccident] = useState(false);
 
   useEffect(() => {
-    fetch(`http://${config.server_host}:${config.server_port}/albums`)
+    fetch(`http://${config.server_host}:${config.server_port}/search_cars`)
       .then(res => res.json())
-      .then(resJson => setAlbums(resJson));
+      .then(resJson => {
+        const carsWithId = resJson.map((car) => ({ id: car.car_id, ...car }));
+        setData(carsWithId);
+      });
   }, []);
 
-  // These formatting options leverage flexboxes, an incredibly powerful tool for formatting dynamic layouts.
-  // You can learn more on MDN web docs linked below (or many other online resources)
-  // https://developer.mozilla.org/en-US/docs/Learn/CSS/CSS_layout/Flexbox
-  const format1 = {};
-  const format2 = { display: 'flex', flexDirection: 'row', justifyContent: 'space-evenly' };
-  const format3 = { display: 'flex', flexDirection: 'row', flexWrap: 'wrap', justifyContent: 'space-evenly' };
-  const format4 = { display: 'grid', justifyContent: 'space-evenly' };
+  const search = () => {
+    const queryParams = new URLSearchParams({
+      make,
+      model,
+      year_low: year[0],
+      year_high: year[1],
+      price_low: price[0],
+      price_high: price[1],
+      mileage_low: mileage[0],
+      mileage_high: mileage[1],
+      mpg_low: mpg[0],
+      mpg_high: mpg[1],
+      one_owner: isOne,
+      no_accident: noAccident
+    }).toString();
+
+    fetch(`http://${config.server_host}:${config.server_port}/search_cars?${queryParams}`)
+      .then(res => res.json())
+      .then(resJson => {
+        const carsWithId = resJson.map((car) => ({ id: car.car_id, ...car }));
+        setData(carsWithId);
+      });
+  }
+
+  const columns = [
+    { field: 'make', headerName: 'Make', width: 150 },
+    { field: 'model', headerName: 'Model', width: 150 },
+    { field: 'year', headerName: 'Year'},
+    { field: 'price', headerName: 'Price'},
+    { field: 'mileage', headerName: 'Mileage'},
+    { field: 'mpg', headerName: 'MPG'},
+    { field: 'isAccident', headerName: 'Accident', renderCell: (params) => (
+      params.value ? "Yes" : "No"
+  ) },
+    { field: 'isOne', headerName: 'One Owner', renderCell: (params) => (
+        params.value ? "Yes" : "No"
+    ) }
+  ]
 
   return (
-    // TODO (TASK 22): Try out the different provided formatting options by replacing “format1”  in the Container's style property with the other provided options.
-    // TODO (TASK 22): Choose the one that displays all the albums in a fluid grid.
-    <Container style={format3}>
-      {albums.map((album) =>
-        <Box
-          key={album.album_id}
-          p={3}
-          m={2}
-          style={{ background: '#c5cae9', borderRadius: '16px', border: '2px solid #000' }}
-        >
-          <img
-            key={album.album_id}
-            src={album.thumbnail_url}
-            alt={`${album.title} album art`}
+    <Container>
+      {selectedCarId && <CarCard carId={selectedCarId} handleClose={() => setSelectedCarId(null)} />}
+      <h2>Search Cars</h2>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value)} fullWidth/>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField label='Model' value={model} onChange={(e) => setModel(e.target.value)} fullWidth/>
+        </Grid>
+        <Grid item xs={6}>
+          <p>Year Range</p>
+          <Slider
+            value={year}
+            min={1960}
+            max={2024}
+            onChange={(e, newValue) => setYear(newValue)}
+            valueLabelDisplay='auto'
           />
-          <h4><NavLink to={`/albums/${album.album_id}`}>{album.title}</NavLink></h4>
-        </Box>
-      )}
+        </Grid>
+        <Grid item xs={6}>
+          <p>Price Range ($)</p>
+          <Slider
+            value={price}
+            min={0}
+            max={500000}
+            step={100}
+            onChange={(e, newValue) => setPrice(newValue)}
+            valueLabelDisplay='auto'
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <p>Mileage Range</p>
+          <Slider
+            value={mileage}
+            min={0}
+            max={500000}
+            step={1000}
+            onChange={(e, newValue) => setMileage(newValue)}
+            valueLabelDisplay='auto'
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <p>MPG Range</p>
+          <Slider
+            value={mpg}
+            min={0}
+            max={128}
+            onChange={(e, newValue) => setMpg(newValue)}
+            valueLabelDisplay='auto'
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <FormControlLabel
+            label='No Accidents'
+            control={<Checkbox checked={noAccident} onChange={(e) => setNoAccident(e.target.checked)} />}
+          />
+        </Grid>
+        <Grid item xs={6}>
+          <FormControlLabel
+            label='One Owner Only'
+            control={<Checkbox checked={isOne} onChange={(e) => setIsOne(e.target.checked)} />}
+          />
+        </Grid>
+      </Grid>
+      <Button onClick={() => search() } style={{ left: '50%', transform: 'translateX(-50%)' }}>
+        Search
+      </Button>
+      <h2>Results</h2>
+      <DataGrid
+        rows={data}
+        columns={columns}
+        pageSize={pageSize}
+        rowsPerPageOptions={[5, 10, 25]}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
+        autoHeight
+      />
     </Container>
   );
 }

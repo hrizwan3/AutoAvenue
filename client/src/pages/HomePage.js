@@ -34,7 +34,7 @@ export default function HomePage() {
 
   return (
     <Container>
-      <h2>Check out your car of the day:</h2>
+      <h2>Check out our featured car of the day:</h2>
       {/* Display car of the day details, assuming the API returns a review that includes car details */}
       <p>
         {carOfTheDay.make && carOfTheDay.model && carOfTheDay.year ?

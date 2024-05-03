@@ -173,9 +173,11 @@ const search_cars = async function(req, res) {
   const mileageLow = req.query.mileage_low ?? 0;
   const mileageHigh = req.query.mileage_high ?? 1000000;
   const mpgLow = req.query.mpg_low ?? 0;
-  const year = req.query.year ?? 0;
+  const mpgHigh = req.query.mpg_high ?? 128;
+  const yearLow = req.query.year_low ?? 2000;
+  const yearHigh = req.query.year_high ?? 2022;
 
-  const accident = req.query.accident === 'true' ? 1 : 0;
+  const noAccident = req.query.no_accident === 'true' ? 1 : 0;
   const oneOwner = req.query.one_owner === 'true' ? 1 : 0;
 
   const page = req.query.page;
@@ -187,11 +189,16 @@ const search_cars = async function(req, res) {
   FROM UsedCars
   WHERE Price BETWEEN ${priceLow} AND ${priceHigh}
     AND Mileage BETWEEN ${mileageLow} AND ${mileageHigh}
-    AND Accidents <= ${accident}
-    AND One_owner <= ${oneOwner}
-    AND MPG > ${mpgLow}
-    AND Year = ${year}
+    AND MPG BETWEEN ${mpgLow} AND ${mpgHigh}
+    AND Year BETWEEN ${yearLow} AND ${yearHigh}
   `;
+  if (noAccident) {
+    qry += `AND Accident = 0 `
+  }
+
+  if (oneOwner) {
+    qry += `AND One_owner = 1 `
+  }
   if (make === '' && model === '') {
     qry += `ORDER BY Make, Model`
   } else if (model === '') {

@@ -1,6 +1,5 @@
 import { useEffect, useState } from 'react';
 import { Container, Divider, Link } from '@mui/material';
-import NavBar from '../components/NavBar'; // Ensure NavBar is properly imported
 import LazyTable from '../components/LazyTable';
 
 const config = require('../config.json');
@@ -12,25 +11,36 @@ export default function HomePage() {
     // Fetch the car of the day, which is actually a review that includes car details
     fetch(`http://${config.server_host}:${config.server_port}/car_of_the_day`)
       .then(res => res.json())
-      .then(resJson => setCarOfTheDay(resJson))
+      .then(resJson => {
+        // Capitalize the car details before setting the state
+        const capitalizedCarOfTheDay = {
+          make: toUpperCase(resJson.Make),
+          model: toUpperCase(resJson.Model),
+          year: resJson.Year
+        };
+        setCarOfTheDay(capitalizedCarOfTheDay);
+      })
       .catch(error => console.error("Failed to fetch car of the day:", error));
   }, []);
 
   // Define the columns for the car table
+  const toUpperCase = (text) => text ? text.toUpperCase() : 'N/A';  // Default to 'N/A' if no text
+
   const carColumns = [
     {
-      field: 'make',
-      headerName: 'Make'
+      field: 'Make',
+      headerName: 'Make',
     },
     {
-      field: 'model',
-      headerName: 'Model'
+      field: 'Model',
+      headerName: 'Model',
     },
     {
-      field: 'year',
-      headerName: 'Year'
+      field: 'avg_rating',
+      headerName: 'Rating',
     }
   ];
+  
 
   return (
     <Container>
@@ -38,13 +48,13 @@ export default function HomePage() {
       {/* Display car of the day details, assuming the API returns a review that includes car details */}
       <p>
         {carOfTheDay.make && carOfTheDay.model && carOfTheDay.year ?
-          `${carOfTheDay.make} ${carOfTheDay.model}, ${carOfTheDay.year}` :
+          `${carOfTheDay.make.toUpperCase()} ${carOfTheDay.model.toUpperCase()}, ${carOfTheDay.year}` :
           "Loading or no car of the day available."
         }
       </p>
       <Divider />
       <h2>Top Cars</h2>
-      <LazyTable route={`http://${config.server_host}:${config.server_port}/top_cars`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
+      <LazyTable route={`http://${config.server_host}:${config.server_port}/car_ratings`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
     </Container>
   );
 };

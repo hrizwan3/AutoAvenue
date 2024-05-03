@@ -1,5 +1,5 @@
-const mysql = require('mysql')
-const config = require('./config.json')
+const mysql = require('mysql');
+const config = require('./config.json');
 
 const connection = mysql.createConnection({
   host: config.rds_host,
@@ -79,18 +79,32 @@ const car_reviews = async function(req, res) {
 const car_ratings = async function(req, res) {
 
   const year = req.query.year ?? 0;
+  const page = req.query.page;
+  const pageSize = req.query.page_size ?? 10;
+  const disp = (page - 1) * pageSize;
+
+  // qry = `
+  // SELECT u.Make, u.Model, AVG(r.Rating) AS avg_rating
+  // FROM UsedCars u JOIN Reviews r ON u.Make=r.Make AND u.Model=r.Model
+  // `;
+  // if (year) {
+  //   qry += `
+  //   WHERE u.Year = ${year}`
+  // }
+  // qry += `
+  // GROUP BY u.Make, u.Model
+  // ORDER BY AVG(r.Rating) DESC
+  // `;
   qry = `
-  SELECT u.Make, u.Model, AVG(r.Rating)
-  FROM UsedCars u JOIN Reviews r ON u.Make=r.Make AND u.Model=r.Model
-  `;
+  SELECT *
+  FROM CarRatings
+  `
   if (year) {
-    qry += `
-    WHERE u.Year = ${year}`
+    qry += `WHERE Year = ${year}`
   }
-  qry += `
-  GROUP BY u.Make, u.Model
-  ORDER BY AVG(r.Rating) DESC
-  `;
+  if (page) {
+    qry += `LIMIT ${pageSize} OFFSET ${disp}`
+  }
   connection.query(
     qry, (err, data) => {
     if (err || data.length === 0) {
@@ -442,7 +456,6 @@ const hidden_gems = async function(req, res) {
       }
     }
   );
-
 }
 
 // Route 14: GET /car_reliability

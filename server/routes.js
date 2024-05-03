@@ -209,7 +209,7 @@ const search_cars = async function(req, res) {
   }
   connection.query(
     qry, (err, data) => {
-      if (err) {
+      if (err || data.length === 0) {
         console.log(err);
         res.json({});
       } else {
@@ -252,7 +252,7 @@ const price_estimates = async function(req, res) {
 
   connection.query(
     qry, (err, data) => {
-      if (err) {
+      if (err || data.length === 0) {
         console.log(err);
         res.json({});
       } else {
@@ -298,7 +298,7 @@ const car_rankings = async function(req, res) {
   `
   connection.query(
     qry, (err, data) => {
-      if (err) {
+      if (err || data.length === 0) {
         console.log(err);
         res.json({});
       } else {
@@ -345,7 +345,7 @@ const car_safety_and_rankings = async function(req, res) {
   `
   connection.query(
     qry, (err, data) => {
-      if (err) {
+      if (err || data.length === 0) {
         console.log(err);
         res.json({});
       } else {
@@ -379,7 +379,7 @@ const car_zscore = async function(req, res) {
   `;
   connection.query(
     qry, (err, data) => {
-      if (err) {
+      if (err || data.length === 0) {
         console.log(err);
         res.json({});
       } else {
@@ -423,7 +423,7 @@ const hidden_gems = async function(req, res) {
 
   connection.query(
     qry, (err, data) => {
-      if (err) {
+      if (err || data.length === 0) {
         console.log(err);
         res.json({});
       } else {
@@ -469,7 +469,7 @@ const car_reliability = async function(req, res) {
   `;
   connection.query(
     qry, (err, data) => {
-      if (err) {
+      if (err || data.length === 0) {
         console.log(err);
         res.json({});
       } else {

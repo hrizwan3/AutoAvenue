@@ -5,23 +5,45 @@ import { createTheme } from "@mui/material/styles";
 
 import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
-import AlbumsPage from './pages/AlbumsPage';
-import SongsPage from './pages/SongsPage';
-import AlbumInfoPage from './pages/AlbumInfoPage'
+import AlbumsPage from './pages/SearchPage';
+import SongsPage from './pages/HiddenGemsPage';
+import AlbumInfoPage from './pages/ComparePage'
 
-// createTheme enables you to customize the look and feel of your app past the default
-// in this case, we only change the color scheme
-export const theme = createTheme({
+const theme = createTheme({
   palette: {
-    primary: indigo,
-    secondary: amber,
+    primary: {
+      main: '#0F0F0F', // Black Onyx
+    },
+    secondary: {
+      main: '#D4AF37', // Gold
+    },
+    background: {
+      default: '#F0EAD6', // Pearl White
+    },
+    text: {
+      primary: '#0F0F0F',
+      secondary: '#D4AF37',
+    },
+  },
+  typography: {
+    fontFamily: 'Roboto, Arial, sans-serif',
+    fontSize: 14,
+    h1: {
+      fontWeight: 300,
+      fontSize: '6rem',
+      letterSpacing: '-0.01562em',
+    },
+    h2: {
+      fontWeight: 300,
+      fontSize: '3.75rem',
+      letterSpacing: '-0.00833em',
+    },
+    button: {
+      fontWeight: 500,
+    },
   },
 });
 
-// App is the root component of our application and as children contain all our pages
-// We use React Router's BrowserRouter and Routes components to define the pages for
-// our application, with each Route component representing a page and the common
-// NavBar component allowing us to navigate between pages (with hyperlinks)
 export default function App() {
   return (
     <ThemeProvider theme={theme}>
@@ -30,9 +52,10 @@ export default function App() {
         <NavBar />
         <Routes>
           <Route path="/" element={<HomePage />} />
-          <Route path="/albums" element={<AlbumsPage />} />
-          <Route path="/albums/:album_id" element={<AlbumInfoPage />} />
-          <Route path="/songs" element={<SongsPage />} />
+          <Route path="/search" element={<SearchPage />} />
+          <Route path="/compare" element={<ComparePage />} />
+          <Route path="/reviews" element={<ReviewsPage />} />
+          <Route path="/hidden_gems" element={<HiddenGemsPage />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

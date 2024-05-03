@@ -13,12 +13,7 @@ export default function HomePage() {
       .then(res => res.json())
       .then(resJson => {
         // Capitalize the car details before setting the state
-        const capitalizedCarOfTheDay = {
-          make: toUpperCase(resJson.Make),
-          model: toUpperCase(resJson.Model),
-          year: resJson.Year
-        };
-        setCarOfTheDay(capitalizedCarOfTheDay);
+        setCarOfTheDay(resJson);
       })
       .catch(error => console.error("Failed to fetch car of the day:", error));
   }, []);

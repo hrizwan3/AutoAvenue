@@ -1,5 +1,6 @@
 import { useEffect, useState } from 'react';
-import { Button, Container, Grid, Slider, TextField } from '@mui/material';
+import { Button, Checkbox, Container, FormControlLabel, Grid, Link, Slider, TextField } from '@mui/material';
+import CarCard from '../components/CarCard';
 import { DataGrid } from '@mui/x-data-grid';
 const config = require('../config.json');
 
@@ -9,26 +10,28 @@ export default function HiddenGemsPage() {
   const [minRating, setMinRating] = useState(4);
   const [percBelow, setPercBelow] = useState(0.1);
 
-  // Define fetchData function to fetch data based on filters
+  const [selectedCarId, setSelectedCarId] = useState(null);
+
   const fetchData = () => {
     fetch(`http://${config.server_host}:${config.server_port}/hidden_gems?min_reviews=${minReviews}&min_rating=${minRating}&perc_below=${percBelow}`)
       .then(res => res.json())
       .then(data => {
-        // Ensure each row has a unique 'id' for DataGrid to use
         const enrichedData = data.map((item, index) => ({ id: index, ...item }));
         setData(enrichedData);
       })
       .catch(err => console.error('Error fetching hidden gems:', err));
   };
 
-  // Initial fetch and re-fetch on parameter change
   useEffect(() => {
     fetchData();
   }, [minReviews, minRating, percBelow]);
 
   const columns = [
-    { field: 'Car_Id', headerName: 'Car ID', width: 120 },
-    { field: 'Make', headerName: 'Make', width: 150 },
+    // { field: 'Car_Id', headerName: 'Car ID', width: 120 },
+    // { field: 'Make', headerName: 'Make', width: 150 },
+    { field: 'Make', headerName: 'Make', width: 150, renderCell: (params) => (
+      <Link onClick={() => setSelectedCarId(params.row.Car_Id)}>{params.value}</Link>
+  ) },
     { field: 'Model', headerName: 'Model', width: 150 },
     { field: 'Year', headerName: 'Year', width: 100 },
     { field: 'Rating', headerName: 'Rating', width: 100 },
@@ -40,9 +43,10 @@ export default function HiddenGemsPage() {
 
   return (
     <Container>
+      {selectedCarId && <CarCard Car_Id={selectedCarId} handleClose={() => setSelectedCarId(null)} />}
       <h2>Search Hidden Gems</h2>
       <Grid container spacing={2}>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <TextField
             label="Minimum Reviews"
             type="number"
@@ -51,7 +55,7 @@ export default function HiddenGemsPage() {
             fullWidth
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={6}>
           <TextField
             label="Minimum Rating"
             type="number"
@@ -60,7 +64,8 @@ export default function HiddenGemsPage() {
             fullWidth
           />
         </Grid>
-        <Grid item xs={4}>
+        <Grid item xs={12}>
+          <p>Percentage Below Market Price</p>
           <Slider
             label="Percentage Below Market Price"
             value={percBelow}

@@ -508,6 +508,46 @@ const car_reliability = async function(req, res) {
   );
 }
 
+// Route 15: GET /fueltype_ranks
+
+
+const car_fueltypes = async function(req, res) {
+  qry = `
+  WITH PriceAndDepreciation AS (
+    SELECT u.Make, u.Model, u.Year, u.Drivetrain, u.Fuel_Type, u.Price,
+        MIN(u.Price) AS InitialPrice,
+        MAX(u.Price) AS FinalPrice,
+        (MIN(u.Price) - MAX(u.Price)) / MIN(u.Price) * -100.0 AS DepreciationPercent,
+        AVG(r.Rating) AS AverageRating
+    FROM UsedCars u
+        JOIN Reviews r ON u.Make = r.Make AND u.Model = r.Model
+    GROUP BY u.Make, u.Model, u.Year, u.Fuel_Type
+),
+CheapestHighRated AS (
+    SELECT *,
+        ROW_NUMBER() OVER (PARTITION BY Fuel_Type ORDER BY Price ASC, AverageRating DESC) AS Ranky
+    FROM PriceAndDepreciation
+)
+SELECT Make, Model, Year, Fuel_Type, Price, AverageRating,
+    ROUND(DepreciationPercent, 2) AS AverageDepreciation
+FROM CheapestHighRated
+WHERE Ranky <= 5
+ORDER BY Fuel_Type ASC, Price ASC, AverageRating DESC;
+`;
+
+  connection.query(
+    qry, (err, data) => {
+      if (err || data.length === 0) {
+        console.log(err);
+        res.json({});
+      } else {
+        res.json(data);
+      }
+    }
+  );
+}
+
+
 module.exports = {
   car,
   car_reviews,
@@ -522,5 +562,7 @@ module.exports = {
   car_zscore,
   car_of_the_day,
   hidden_gems,
-  car_reliability
+  car_reliability,
+  car_fueltypes
 }
+

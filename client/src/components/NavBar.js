@@ -36,6 +36,7 @@ export default function NavBar() {
           <NavText href='/reviews' text='REVIEWS' />
           <NavText href='/hidden_gems' text='GEMS' />
           <NavText href='/carsafetyratings' text='SAFE&POPULAR' />
+          <NavText href='/FuelTypes' text='FUEL' />
         </Toolbar>
       </Container>
     </AppBar>

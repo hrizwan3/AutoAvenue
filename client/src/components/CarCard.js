@@ -1,6 +1,8 @@
 import { useEffect, useState } from 'react';
 import { Box, Button, Modal } from '@mui/material';
 import { Line } from 'react-chartjs-2';
+import { NavLink } from 'react-router-dom';
+
 import {
   Chart as ChartJS,
   CategoryScale,
@@ -155,7 +157,10 @@ return (
         <p>Fuel Type: {carData.Fuel_type}</p>
         <p>Accident History: {carData.Accident ? 'Yes' : 'No'}</p>
         <p>One Owner: {carData.One_owner ? 'Yes' : 'No'}</p>
-        <Line data={bellCurveData} options={bellCurveOptions} />
+        {/* <Line data={bellCurveData} options={bellCurveOptions} /> */}
+        <p>&nbsp;
+          <NavLink to={`/reviews/${carData.Make}/${carData.Model}`}>See Reviews!</NavLink>
+        </p>
         <Button onClick={handleClose} style={{ marginTop: 20 }}>
           Close
         </Button>

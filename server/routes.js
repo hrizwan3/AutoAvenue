@@ -130,7 +130,7 @@ const car_efficiency = async function(req, res) {
     qry += ` AND Year = ${year}`
   }
   connection.query(qry, (err, data) => {
-    if (err || data.length === 0) {
+    if (err) {
       console.log(err);
       res.json({});
     } else {
@@ -149,7 +149,7 @@ const reviewer = async function(req, res) {
   FROM Reviews
   WHERE Reviewer = "${reviewer}"
   `, (err, data) => {
-    if (err || data.length === 0) {
+    if (err) {
       console.log(err);
       res.json({});
     } else {
@@ -168,7 +168,7 @@ const reviewer_avg = async function(req, res) {
   WHERE Reviewer = "${reviewer}"
   GROUP BY Reviewer
   `, (err, data) => {
-    if (err || data.length === 0) {
+    if (err) {
       console.log(err);
       res.json({});
     } else {
@@ -179,6 +179,7 @@ const reviewer_avg = async function(req, res) {
 
 // Route 8: GET /search_cars
 const search_cars = async function(req, res) {
+  console.log(req.query);
 
   const make = req.query.make ?? '';
   const model = req.query.model ?? '';
@@ -240,7 +241,7 @@ const search_cars = async function(req, res) {
   }
   connection.query(
     qry, (err, data) => {
-      if (err || data.length === 0) {
+      if (err) {
         console.log(err);
         res.json({});
       } else {
@@ -283,7 +284,7 @@ const price_estimates = async function(req, res) {
 
   connection.query(
     qry, (err, data) => {
-      if (err || data.length === 0) {
+      if (err) {
         console.log(err);
         res.json({});
       } else {
@@ -310,7 +311,7 @@ ORDER BY rm.AverageMileage DESC, rm.PercentageAccidents;
   `
   connection.query(
     qry, (err, data) => {
-      if (err || data.length === 0) {
+      if (err) {
         console.log(err);
         res.json({});
       } else {
@@ -340,7 +341,7 @@ const car_safety_and_rankings = async function(req, res) {
   `
   connection.query(
     qry, (err, data) => {
-      if (err || data.length === 0) {
+      if (err) {
         console.log(err);
         res.json({});
       } else {
@@ -374,7 +375,7 @@ const car_zscore = async function(req, res) {
   `;
   connection.query(
     qry, (err, data) => {
-      if (err || data.length === 0) {
+      if (err) {
         console.log(err);
         res.json({});
       } else {
@@ -413,7 +414,7 @@ const hidden_gems = async function(req, res) {
 
   connection.query(
     qry, (err, data) => {
-      if (err || data.length === 0) {
+      if (err) {
         console.log(err);
         res.json({});
       } else {
@@ -458,7 +459,7 @@ const car_reliability = async function(req, res) {
   `;
   connection.query(
     qry, (err, data) => {
-      if (err || data.length === 0) {
+      if (err) {
         console.log(err);
         res.json({});
       } else {
@@ -485,11 +486,6 @@ const car_fueltypes = async function(req, res) {
     if (err) {
       console.error("Error querying database:", err);
       res.status(500).json({error: "Internal server error"});
-      return;
-    }
-    if (data.length === 0) {
-      console.log("No data found for fuel type:", fuelTypeQuery);
-      res.status(404).json({message: "No data found"});
       return;
     }
     res.json(data);

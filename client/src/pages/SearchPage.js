@@ -24,28 +24,13 @@ export default function SearchCarsPage() {
       .then(res => res.json())
       .then(data => {
         // Ensure each row has a unique 'id' for DataGrid to use
-        const enrichedData = data.map((car) => ({ id: car.Car_Id, ...car }));
+        const enrichedData = data.map((car) => ({ Car_Id: car.Car_Id, ...car }));
         setData(enrichedData);
       })
       .catch(err => console.error('Error fetching hidden gems:', err));
   }, []);
 
   const search = () => {
-    // const queryParams = new URLSearchParams({
-    //   make,
-    //   model,
-    //   year_low: year[0],
-    //   year_high: year[1],
-    //   price_low: price[0],
-    //   price_high: price[1],
-    //   mileage_low: mileage[0],
-    //   mileage_high: mileage[1],
-    //   mpg_low: mpg[0],
-    //   mpg_high: mpg[1],
-    //   one_owner: isOne,
-    //   no_accident: noAccident
-    // }).toString();
-
     fetch(`http://${config.server_host}:${config.server_port}/search_cars?make=${make}
     &model=${model}&year_low=${year[0]}&year_high=${year[1]}&price_low=${price[0]}
     &price_high=${price[1]}&mileage_low=${mileage[0]}&mileage_high=${mileage[1]}
@@ -53,10 +38,10 @@ export default function SearchCarsPage() {
       .then(res => res.json())
       .then(data => {
         // Ensure each row has a unique 'id' for DataGrid to use
-        const enrichedData = data.map((car) => ({ id: car.Car_id, ...car }));
+        const enrichedData = data.map((car) => ({ Car_Id: car.Car_id, ...car }));
         setData(enrichedData);
       })
-      .catch(err => console.error('Error fetching hidden gems:', err));
+      .catch(err => console.error('Error fetching cars:', err));
   }
 
   const columns = [

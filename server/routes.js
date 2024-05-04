@@ -182,14 +182,14 @@ const search_cars = async function(req, res) {
 
   const make = req.query.make ?? '';
   const model = req.query.model ?? '';
-  const priceLow = req.query.price_low ?? 0;
-  const priceHigh = req.query.price_high ?? 10000000;
-  const mileageLow = req.query.mileage_low ?? 0;
-  const mileageHigh = req.query.mileage_high ?? 1000000;
-  const mpgLow = req.query.mpg_low ?? 0;
-  const mpgHigh = req.query.mpg_high ?? 128;
-  const yearLow = req.query.year_low ?? 2000;
-  const yearHigh = req.query.year_high ?? 2022;
+  const priceLow = req.query.price_low ?? 15000;
+  const priceHigh = req.query.price_high ?? 50000;
+  const mileageLow = req.query.mileage_low ?? 10000;
+  const mileageHigh = req.query.mileage_high ?? 100000;
+  const mpgLow = req.query.mpg_low ?? 30;
+  const mpgHigh = req.query.mpg_high ?? 50;
+  const yearLow = req.query.year_low ?? 2010;
+  const yearHigh = req.query.year_high ?? 2020;
 
   const noAccident = req.query.no_accident === 'true' ? 1 : 0;
   const oneOwner = req.query.one_owner === 'true' ? 1 : 0;
@@ -306,7 +306,7 @@ const car_rankings = async function(req, res) {
 SELECT rm.Make, rm.Model, rm.AverageRating, rm.AveragePrice, rm.AverageMileage, rm.PercentageAccidents, rt.NumReviews, rm.Ranking
 FROM RankedModels rm JOIN ReviewThreshold rt ON rm.Make=rt.Make AND rm.Model=rt.Model
 WHERE rm.AverageMileage < 100000 AND rm.PercentageAccidents < 50
-ORDER BY Ranking, AverageRating DESC, AveragePrice;
+ORDER BY rm.AverageMileage DESC, rm.PercentageAccidents;
   `
   connection.query(
     qry, (err, data) => {

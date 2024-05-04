@@ -15,13 +15,13 @@ import FuelTypes from './pages/FuelTypes.js'
 const theme = createTheme({
   palette: {
     primary: {
-      main: '#212121',
+      main: '#263238',
     },
     secondary: {
       main: '#9c27b0',
     },
     background: {
-      default: '#b0bec5',
+      default: '#f4f4f2',
     }
   },
   typography: {

@@ -218,7 +218,7 @@ return (
         <p>Mileage: {carData.Mileage?.toLocaleString()} miles</p>
         <p>MPG: {carData.MPG}</p>
         <p>Drivetrain: {carData.Drivetrain}</p>
-        <p>Fuel Type: {carData.Fuel_type}</p>
+        <p>Fuel Type: {carData.Fuel_Type}</p>
         <p>Accident History: {carData.Accident ? 'Yes' : 'No'}</p>
         <p>One Owner: {carData.One_owner ? 'Yes' : 'No'}</p>
         {/* <Line data={bellCurveData} options={bellCurveOptions} /> */}

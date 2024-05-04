@@ -65,7 +65,7 @@ const car_reviews = async function(req, res) {
   }
   connection.query(
     qry, (err, data) => {
-    if (err || data.length === 0) {
+    if (err) {
       console.log(err);
       res.json({});
     } else {

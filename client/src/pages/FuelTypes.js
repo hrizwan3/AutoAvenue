@@ -34,10 +34,11 @@ export default function HomePage() {
   const carReviews = [
     { field: 'Make', headerName: 'Make', width: 150 },
     { field: 'Model', headerName: 'Model', width: 150 },
+    { field: 'Year', headerName: 'Year', width: 100},
     { field: 'Fuel_Type', headerName: 'Fuel', width: 150 },
     { field: 'AverageRating', headerName: 'Average Rating', width: 150 },
-    { field: 'Price', headerName: 'Average Price', width: 150 },
     { field: 'AverageDepreciation', headerName: 'Average Depreciation', width: 160 },
+    { field: 'Price', headerName: 'Average Price', width: 150 },
     { field: 'MPG', headerName: 'MPG', width: 100 },
     
   ];

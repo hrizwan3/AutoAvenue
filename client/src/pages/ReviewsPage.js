@@ -23,7 +23,6 @@ export default function HomePage() {
   }, []);
 
   const carReviews = [
-    { field: 'Review_Id', headerName: 'Reviewer ID', width: 150 },
     { field: 'Title', headerName: 'Review Title', width: 150 },
     { field: 'Rating', headerName: 'Rating', width: 150 },
     { field: 'Review', headerName: 'Review', width: 10000 }

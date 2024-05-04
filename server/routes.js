@@ -294,37 +294,18 @@ const price_estimates = async function(req, res) {
 
 // Route 10: GET /car_rankings
 const car_rankings = async function(req, res) {
-  const count = 10;
-  const avgMileage = 100000;
-  const pctAccidents = 50;
 
   qry = `
-  WITH RankedModels AS (
-    SELECT
-        u.Make,
-        u.Model,
-        AVG(r.Rating) AS AverageRating,
-        AVG(u.Price) AS AveragePrice,
-        AVG(u.Mileage) AS AverageMileage,
-        SUM(CASE WHEN u.Accident = 1.0 THEN 1 ELSE 0 END) * 100.0 / COUNT(u.Accident) AS PercentageAccidents,
-        RANK() OVER (ORDER BY AVG(r.Rating) DESC, AVG(u.Price)) AS Ranking
-    FROM
-        UsedCars u
-    JOIN
-        Reviews r ON u.Make = r.Make AND u.Model = r.Model
-    GROUP BY
-        u.Make, u.Model
-    ),
-    ReviewThreshold AS (
-        SELECT Make, Model, COUNT(*) as NumReviews
-        FROM Reviews r
-        GROUP BY Make, Model
-        HAVING COUNT(*) >= ${count}
-    )
-    SELECT rm.Make, rm.Model, rm.AverageRating, rm.AveragePrice, rm.AverageMileage, rm.PercentageAccidents, rt.NumReviews, rm.Ranking
-    FROM RankedModels rm JOIN ReviewThreshold rt ON rm.Make=rt.Make AND rm.Model=rt.Model
-    WHERE rm.AverageMileage < ${avgMileage} AND rm.PercentageAccidents < ${pctAccidents}
-    ORDER BY Ranking, AverageRating DESC, AveragePrice;
+  WITH ReviewThreshold AS (
+    SELECT Make, Model, COUNT(*) as NumReviews
+    FROM Reviews r
+    GROUP BY Make, Model
+    HAVING COUNT(*) >= 10
+)
+SELECT rm.Make, rm.Model, rm.AverageRating, rm.AveragePrice, rm.AverageMileage, rm.PercentageAccidents, rt.NumReviews, rm.Ranking
+FROM RankedModels rm JOIN ReviewThreshold rt ON rm.Make=rt.Make AND rm.Model=rt.Model
+WHERE rm.AverageMileage < 100000 AND rm.PercentageAccidents < 50
+ORDER BY Ranking, AverageRating DESC, AveragePrice;
   `
   connection.query(
     qry, (err, data) => {

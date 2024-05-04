@@ -55,14 +55,13 @@ export default function HomePage() {
   ];
 
   const table2columns = [
-    { field: 'Make', headerName: 'Make', width: 100 },
-    { field: 'Model', headerName: 'Model', width: 100 },
-    { field: 'AverageRating', headerName: 'Average Rating', width: 130 },
-    { field: 'AveragePrice', headerName: 'Average Price', width: 130 },
-    { field: 'AverageMileage', headerName: 'Average Mileage', width: 130 },
-    { field: 'PercentageAccidents', headerName: '% Accidents', width: 130 },
-    { field: 'NumReviews', headerName: 'Number of Reviews', width: 130 }
-    // { field: 'Ranking', headerName: 'Ranking', width: 90 }
+    { field: 'Make', headerName: 'Make', width: 150 },
+    { field: 'Model', headerName: 'Model', width: 150 },
+    { field: 'AverageRating', headerName: 'Average Rating', width: 150 },
+    { field: 'AveragePrice', headerName: 'Average Price', width: 150 },
+    { field: 'AverageMileage', headerName: 'Average Mileage', width: 150 },
+    { field: 'PercentageAccidents', headerName: '% Accidents', width: 150 },
+    { field: 'NumReviews', headerName: 'Number of Reviews', width: 150 }
   ];
 
   return (

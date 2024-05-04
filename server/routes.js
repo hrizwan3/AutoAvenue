@@ -324,25 +324,7 @@ const car_safety_and_rankings = async function(req, res) {
   const avgRating = req.query.avg_rating ?? 1.0;
 
   qry = `
-  WITH ModelRatings AS (
-    SELECT rc.Make, rc.Model, rc.Year, AVG(rc.Rating) AS AvgRating
-    FROM
-        (SELECT r.Make, r.Model, r.Year, r.Rating
-         FROM Reviews r
-         WHERE EXISTS (
-             SELECT 1 FROM UsedCars u
-             WHERE u.Make = r.Make AND u.Model = r.Model AND u.Year = r.Year AND u.One_owner = 1.0
-         )) rc
-    GROUP BY rc.Make, rc.Model, rc.Year
-    ),
-    HighlyRatedModels AS (
-        SELECT
-            mr.Make, mr.Model, AVG(mr.AvgRating) AS OverallAvgRating
-        FROM ModelRatings mr
-        GROUP BY mr.Make, mr.Model
-        HAVING AVG(mr.AvgRating) > ${avgRating}
-    )
-    SELECT
+  SELECT
         u.Make, u.Model, AVG(u.Price) AS AvgPrice,
         AVG(u.Mileage) AS AvgMileage,
         SUM(CASE WHEN u.Accident = 1.0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS PercentAccidents,

@@ -5,6 +5,7 @@ import { DataGrid } from '@mui/x-data-grid';
 const config = require('../config.json');
 
 export default function HiddenGemsPage() {
+  const [pageSize, setPageSize] = useState(10);
   const [data, setData] = useState([]);
   const [minReviews, setMinReviews] = useState(0);
   const [minRating, setMinRating] = useState(4);
@@ -84,8 +85,9 @@ export default function HiddenGemsPage() {
       <DataGrid
         rows={data}
         columns={columns}
-        pageSize={10}
+        pageSize={pageSize}
         rowsPerPageOptions={[5, 10, 25]}
+        onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         autoHeight
       />
     </Container>

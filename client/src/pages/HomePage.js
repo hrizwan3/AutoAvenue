@@ -61,7 +61,7 @@ return (
       <img src={carImage} alt="Car of the Day" style={{ width: '200px', height: 'auto', marginLeft: '20px' }} />
     </div>
     <Divider />
-    <Typography variant="h6">Top Cars</Typography>
+    <Typography variant="h6">Top Cars By Rating</Typography>
     <LazyTable route={`http://${config.server_host}:${config.server_port}/car_ratings`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
   </Container>
 );

@@ -46,6 +46,7 @@ export default function HomePage() {
 
   return (
     <Container>
+      <h2> Search Reviews</h2>
       <Grid container spacing={2}>
       <Grid item xs={6}>
           <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value)} fullWidth/>

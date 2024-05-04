@@ -34,9 +34,9 @@ export default function NavBar() {
           <NavText href='/' text='AutoAvenue' isMain />
           <NavText href='/search' text='SEARCH' />
           <NavText href='/reviews' text='REVIEWS' />
-          <NavText href='/hidden_gems' text='GEMS' />
-          <NavText href='/carsafetyratings' text='SAFE&POPULAR' />
+          <NavText href='/carsafetyratings' text='POPULAR' />
           <NavText href='/FuelTypes' text='FUEL' />
+          <NavText href='/hidden_gems' text='GEMS' />
         </Toolbar>
       </Container>
     </AppBar>

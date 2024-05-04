@@ -57,11 +57,11 @@ export default function HomePage() {
   const table2columns = [
     { field: 'Make', headerName: 'Make', width: 150 },
     { field: 'Model', headerName: 'Model', width: 150 },
-    { field: 'AverageRating', headerName: 'Average Rating', width: 150 },
     { field: 'AveragePrice', headerName: 'Average Price', width: 150 },
-    { field: 'AverageMileage', headerName: 'Average Mileage', width: 150 },
+    { field: 'NumReviews', headerName: 'Number of Reviews', width: 150 },
     { field: 'PercentageAccidents', headerName: '% Accidents', width: 150 },
-    { field: 'NumReviews', headerName: 'Number of Reviews', width: 150 }
+    { field: 'AverageRating', headerName: 'Average Rating', width: 150 },
+    { field: 'AverageMileage', headerName: 'Average Mileage', width: 150 }
   ];
 
   return (
@@ -81,7 +81,8 @@ export default function HomePage() {
       <Divider />
       <Typography variant="h6">Top Cars By Rating</Typography>
       <LazyTable route={`http://${config.server_host}:${config.server_port}/car_ratings`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
-      <Typography variant="h6">Car Use and Safety History</Typography>
+      <Divider />
+      <Typography variant="h6">Most Durable High-Quality Cars</Typography>
       {/* <LazyTable data={table2data} columns={table2columns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} /> */}
       <DataGrid
         rows={table2data}

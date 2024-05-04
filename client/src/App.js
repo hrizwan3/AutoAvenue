@@ -6,7 +6,6 @@ import NavBar from './components/NavBar';
 import HomePage from './pages/HomePage';
 import SearchPage from './pages/SearchPage';
 import HiddenGemsPage from './pages/HiddenGemsPage';
-import ComparePage from './pages/ComparePage'
 import ReviewsPage from './pages/ReviewsPage'
 import ReviewSpec from './pages/ReviewSpec'
 import CarSafetyRankings from './pages/CarSafetyRanking.js'
@@ -57,7 +56,6 @@ export default function App() {
         <Routes>
           <Route path="/" element={<HomePage />} />
           <Route path="/search" element={<SearchPage />} />
-          <Route path="/compare" element={<ComparePage />} />
           <Route path="/reviews" element={<ReviewsPage />} />
           <Route path="/hidden_gems" element={<HiddenGemsPage />} />
           <Route path="/reviews/:make/:model" element={<ReviewSpec />} />

@@ -15,9 +15,9 @@ export default function HomePage() {
       .then(data => {
         // const reviews = resJson.map((review, index) => ({ id: index, ...review }));
         // setReviewData(reviews);
-        const enrichedData = data.map((review) => ({
+        const enrichedData = data.map((review, index) => ({
           ...review,
-          id: review.Make,
+          id: index,
           Make: review.Make.toUpperCase(),
           Model: review.Model.toUpperCase(),
           AverageRating: review.AverageRating,
@@ -32,13 +32,14 @@ export default function HomePage() {
   }, [selectedFuelType]);
 
   const carReviews = [
-    { field: 'Make', headerName: 'Make', width: 100 },
-    { field: 'Model', headerName: 'Model', width: 100 },
+    { field: 'Make', headerName: 'Make', width: 150 },
+    { field: 'Model', headerName: 'Model', width: 150 },
+    { field: 'Fuel_Type', headerName: 'Fuel', width: 150 },
     { field: 'AverageRating', headerName: 'Average Rating', width: 150 },
-    { field: 'Price', headerName: 'Average Price', width: 200 },
-    { field: 'AverageDepreciation', headerName: 'Average Depreciation', width: 200 },
-    { field: 'MPG', headerName: 'MPG', width: 150 },
-    { field: 'Fuel_Type', headerName: 'Fuel', width: 150 }
+    { field: 'Price', headerName: 'Average Price', width: 150 },
+    { field: 'AverageDepreciation', headerName: 'Average Depreciation', width: 160 },
+    { field: 'MPG', headerName: 'MPG', width: 100 },
+    
   ];
 
   const handleFuelTypeChange = (event) => {

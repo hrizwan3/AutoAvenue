@@ -17,7 +17,12 @@ export default function HiddenGemsPage() {
     fetch(`http://${config.server_host}:${config.server_port}/hidden_gems`)
     .then(res => res.json())
     .then(data => {
-      const enrichedData = data.map((item, index) => ({ id: index, ...item }));
+      const enrichedData = data.map((car) => ({
+        ...car,
+        id: car.Car_Id,
+        Make: car.Make.toUpperCase(),
+        Model: car.Model.toUpperCase()
+      }));
       setData(enrichedData);
     })
     .catch(err => console.error('Error fetching hidden gems:', err));
@@ -27,7 +32,12 @@ export default function HiddenGemsPage() {
     fetch(`http://${config.server_host}:${config.server_port}/hidden_gems?min_reviews=${minReviews}&min_rating=${minRating}&perc_below=${percBelow}`)
       .then(res => res.json())
       .then(data => {
-        const enrichedData = data.map((item, index) => ({ id: index, ...item }));
+        const enrichedData = data.map((car) => ({
+          ...car,
+          id: car.Car_Id,
+          Make: car.Make.toUpperCase(),
+          Model: car.Model.toUpperCase()
+        }));
         setData(enrichedData);
       })
       .catch(err => console.error('Error fetching hidden gems:', err));

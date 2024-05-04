@@ -12,9 +12,9 @@ export default function SearchCarsPage() {
 
   const [make, setMake] = useState('');
   const [model, setModel] = useState('');
-  const [mileage, setMileage] = useState([0, 500000]);
-  const [year, setYear] = useState([2000, 2020]);
-  const [price, setPrice] = useState([5000, 75000]);
+  const [mileage, setMileage] = useState([10000, 100000]);
+  const [year, setYear] = useState([2010, 2020]);
+  const [price, setPrice] = useState([15000, 50000]);
   const [mpg, setMpg] = useState([30, 50]);
   const [isOne, setIsOne] = useState(false);
   const [noAccident, setNoAccident] = useState(false);
@@ -31,7 +31,8 @@ export default function SearchCarsPage() {
           ...car,
           id: car.Car_Id,
           Make: car.Make.toUpperCase(),
-          Model: car.Model.toUpperCase()
+          Model: car.Model.toUpperCase(),
+          One_owner: car.One_Owner === 1
         }));
         setData(enrichedData);
       })
@@ -49,7 +50,8 @@ export default function SearchCarsPage() {
           ...car,
           id: car.Car_Id,
           Make: car.Make.toUpperCase(),
-          Model: car.Model.toUpperCase()
+          Model: car.Model.toUpperCase(),
+          One_owner: car.One_Owner === 1
         }));
         
         setData(enrichedData);

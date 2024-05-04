@@ -26,7 +26,7 @@ export default function HomePage() {
     { field: 'Make', headerName: 'Make', width: 100 },
     { field: 'Model', headerName: 'Model', width: 100 },
     { field: 'AvgMileage', headerName: 'Average Mileage', width: 150 },
-    { field: 'AvgPrice', headerName: 'Average Mileage', width: 200 },
+    { field: 'AvgPrice', headerName: 'Average Price', width: 200 },
     { field: 'PercentAccidents', headerName: 'Percent of Cars in Accidents', width: 200 },
     { field: 'AvgRating', headerName: 'Average Rating', width: 150 },
     { field: 'HighRatingsCount', headerName: 'High Ratings Count', width: 150 }
@@ -34,7 +34,7 @@ export default function HomePage() {
 
   return (
     <Container>
-      <h2> Car Safety Rankings based on Accidents</h2>
+      <h2>The Most Popular Cars, Ranked By Safety</h2>
       {/* Display car of the day details, assuming the API returns a review that includes car details */}
       <DataGrid
         rows={reviewData}

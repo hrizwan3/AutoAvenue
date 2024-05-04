@@ -215,7 +215,8 @@ const search_cars = async function(req, res) {
   }
 
   if (make === '' && model === '') {
-    qry += `ORDER BY Make, Model`
+    qry += `
+    ORDER BY Make, Model`
   } else if (model === '') {
     qry += `
       AND Make LIKE '${make}%'
@@ -335,7 +336,7 @@ const car_safety_and_rankings = async function(req, res) {
     JOIN HighlyRatedModels hrm ON u.Make = hrm.Make AND u.Model = hrm.Model
     WHERE u.One_owner = 1.0
     GROUP BY u.Make, u.Model
-    ORDER BY PercentAccidents, AvgPrice DESC;
+    ORDER BY PercentAccidents, HighRatingsCount DESC;
   `
   connection.query(
     qry, (err, data) => {

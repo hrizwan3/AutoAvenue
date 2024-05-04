@@ -1,20 +1,23 @@
 import { useEffect, useState } from 'react';
-import { Container, Divider, Link } from '@mui/material';
 import LazyTable from '../components/LazyTable';
 import { DataGrid } from '@mui/x-data-grid';
+import { Button, Checkbox, Container, FormControlLabel, Grid, TextField, Slider } from '@mui/material';
+
 
 const config = require('../config.json');
 
 export default function HomePage() {
   const [reviewData, setReviewData] = useState({});
   const [pageSize, setPageSize] = useState(10);
+  const [make, setMake] = useState('');
+  const [model, setModel] = useState('');
 
   useEffect(() => {
     // Fetch the car of the day, which is actually a review that includes car details
-    fetch(`http://${config.server_host}:${config.server_port}/car_safety_and_rankings`)
+    fetch(`http://${config.server_host}:${config.server_port}/car_reviews`)
       .then(res => res.json())
       .then(resJson => {
-        const reviews = resJson.map((reviews) => ({ id: reviews.Model, ...reviews }));
+        const reviews = resJson.map((reviews) => ({ id: reviews.Review_id, ...reviews }));
         setReviewData(reviews);
       });
   }, []);
@@ -22,41 +25,42 @@ export default function HomePage() {
   // Define the columns for the car table
   const toUpperCase = (text) => text ? text.toUpperCase() : 'N/A';  // Default to 'N/A' if no text
 
-//   const carReviews = [
-//     {
-//       field: 'Make',
-//       headerName: 'Make',
-//     },
-//     {
-//       field: 'Model',
-//       headerName: 'Model',
-//     },
-//     {
-//       field: 'AverageRating',
-//       headerName: 'Rating',
-//     },
-//     {
-//      field: 'PercentAccidents',
-//      headerName: 'Percent of Cars in Accidents',
-//     }, 
-//     {
-//         field: 'AvgMileage',
-//         headerName: 'Average Mileage',
-//     }, 
-//   ];
-  
 
   const carReviews = [
-    { field: 'Make', headerName: 'Make', width: 150 },
-    { field: 'Model', headerName: 'Model', width: 150 },
-    { field: 'AvgMileage', headerName: 'Average Mileage'},
-    { field: 'PercentAccidents', headerName: 'Percent of Accidents'},
-    { field: 'AvgRating', headerName: 'Average Rating'}
+    { field: 'Review_Id', headerName: 'Reviewer ID', width: 150 },
+    { field: 'Title', headerName: 'Review Title', width: 150 },
+    { field: 'Review', headerName: 'Review', width: 150 },
+    { field: 'Rating', headerName: 'Rating', width: 150 }
   ]
+
+  const search = () => {
+    // const queryParams = new URLSearchParams({
+    //   make,
+    //   model
+    // }).toString();
+
+
+    fetch(`http://${config.server_host}:${config.server_port}/search_songs?make=${make}&model=${model}`)      
+    .then(res => res.json())
+      .then(resJson => {
+        const reviews = resJson.map((reviews) => ({ id: reviews.Review_id, ...reviews }));
+        setReviewData(reviews);
+      });
+  }
 
   return (
     <Container>
-      <h2>All Cars And Their Average Reviews:</h2>
+      <Grid container spacing={2}>
+        <Grid item xs={6}>
+          <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value)} fullWidth/>
+        </Grid>
+        <Grid item xs={6}>
+          <TextField label='Model' value={model} onChange={(e) => setModel(e.target.value)} fullWidth/>
+        </Grid>
+        <Button onClick={() => search() } style={{ left: '50%', transform: 'translateX(-50%)' }}>
+        Search
+      </Button>
+      </Grid>
       {/* Display car of the day details, assuming the API returns a review that includes car details */}
       <DataGrid
         rows={reviewData}
@@ -66,7 +70,6 @@ export default function HomePage() {
         onPageSizeChange={(newPageSize) => setPageSize(newPageSize)}
         autoHeight
       />
-          <Divider />
     </Container>
   );
 };

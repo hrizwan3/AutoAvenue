@@ -27,7 +27,8 @@ export default function SearchCarsPage() {
           ...car,
           id: car.Car_Id,
           Make: car.Make.toUpperCase(),
-          Model: car.Model.toUpperCase()
+          Model: car.Model.toUpperCase(),
+          One_owner: car.One_Owner === 1
         }));
         setData(enrichedData);
       })
@@ -41,11 +42,13 @@ export default function SearchCarsPage() {
     `&mpg_low=${mpg[0]}&mpg_high=${mpg[1]}&one_owner=${isOne}&no_accident=${noAccident}`)
       .then(res => res.json())
       .then(data => {
+        console.log(data);
         const enrichedData = data.map((car) => ({
           ...car,
           id: car.Car_Id,
           Make: car.Make.toUpperCase(),
-          Model: car.Model.toUpperCase()
+          Model: car.Model.toUpperCase(),
+          One_owner: car.One_Owner === 1
         }));
         
         setData(enrichedData);
@@ -74,10 +77,10 @@ export default function SearchCarsPage() {
       <h2>Search Cars</h2>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value)} fullWidth/>
+          <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value.toLowerCase())} fullWidth/>
         </Grid>
         <Grid item xs={6}>
-          <TextField label='Model' value={model} onChange={(e) => setModel(e.target.value)} fullWidth/>
+          <TextField label='Model' value={model} onChange={(e) => setModel(e.target.value.toLowerCase())} fullWidth/>
         </Grid>
         <Grid item xs={6}>
           <p>Year Range</p>

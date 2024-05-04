@@ -14,7 +14,7 @@ export default function HomePage() {
     fetch(`http://${config.server_host}:${config.server_port}/car_safety_and_rankings`)
       .then(res => res.json())
       .then(resJson => {
-        const reviews = resJson.map((reviews) => ({ id: reviews.Make, ...reviews }));
+        const reviews = resJson.map((reviews) => ({ id: reviews.Model, ...reviews }));
         setReviewData(reviews);
       });
   }, []);
@@ -51,7 +51,7 @@ export default function HomePage() {
     { field: 'Model', headerName: 'Model', width: 150 },
     { field: 'AvgMileage', headerName: 'Average Mileage'},
     { field: 'PercentAccidents', headerName: 'Percent of Accidents'},
-    { field: 'AverageRating', headerName: 'Average Rating'}
+    { field: 'AvgRating', headerName: 'Average Rating'}
   ]
 
   return (

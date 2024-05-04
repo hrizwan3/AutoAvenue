@@ -1,5 +1,5 @@
 import { useEffect, useState } from 'react';
-import { Container, Divider, Link, Typography } from '@mui/material';
+import { Container, Typography, Card, CardContent, CardMedia, Divider } from '@mui/material';
 import LazyTable from '../components/LazyTable';
 import { DataGrid } from '@mui/x-data-grid';
 
@@ -66,29 +66,32 @@ export default function HomePage() {
 
   return (
     <Container>
-      <Typography variant="h5">Check out our featured car of the day:</Typography>
-      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-        <div>
-          <p>
-            {carOfTheDay.make && carOfTheDay.model && carOfTheDay.year ?
-              `${carOfTheDay.make} ${carOfTheDay.model}, ${carOfTheDay.year}` :
-              "Loading or no car of the day available."
-            }
-          </p>
-        </div>
-        <img src={carImage} alt="Car of the Day" style={{ width: '200px', height: 'auto', marginLeft: '20px' }} />
-      </div>
+      <Typography variant="h4" gutterBottom style={{ color: '#651fff' }}>Featured Car of the Day</Typography>
+      <Card sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, p: 2, boxShadow: 3 }}>
+        <CardMedia
+          component="img"
+          sx={{ width: 200, display: 'block', borderRadius: '5px' }}
+          image={carImage}
+          alt="Car of the Day"
+        />
+        <CardContent>
+          <Typography variant="h5">{carOfTheDay.make} {carOfTheDay.model}</Typography>
+          <Typography variant="subtitle1">Year: {carOfTheDay.year}</Typography>
+          <Typography variant="body2" color="text.secondary">
+            Explore today's featured model
+          </Typography>
+        </CardContent>
+      </Card>
       <Divider />
       <Typography variant="h6">Top Cars By Rating</Typography>
       <LazyTable route={`http://${config.server_host}:${config.server_port}/car_ratings`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
       <Divider />
       <Typography variant="h6">Most Durable High-Quality Cars</Typography>
-      {/* <LazyTable data={table2data} columns={table2columns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} /> */}
       <DataGrid
         rows={table2data}
         columns={table2columns}
         pageSize={10}
-        rowsPerPageOptions={[5,10,25]}
+        rowsPerPageOptions={[5, 10, 25]}
         autoHeight
       />
     </Container>

@@ -489,7 +489,7 @@ const car_fueltypes = async function(req, res) {
           ROW_NUMBER() OVER (PARTITION BY Fuel_Type ORDER BY Price ASC, AverageRating DESC) AS Ranky
       FROM PriceAndDepreciation
     )
-    SELECT Make, Model, Year, Fuel_Type, Price, AverageRating,
+    SELECT DISTINCT Make, Model, Year, Fuel_Type, Price, AverageRating,
       ROUND(DepreciationPercent, 2) AS AverageDepreciation, MPG 
     FROM CheapestHighRated
     WHERE Fuel_Type = "${fuelTypeQuery}"

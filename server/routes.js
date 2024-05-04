@@ -442,7 +442,7 @@ const hidden_gems = async function(req, res) {
       SELECT u.Car_Id, u.Make, u.Model, u.Year, u.Price, m.AvgPrice AS MarketAvgPrice
       FROM UsedCars u
       JOIN MarketAveragePrice m ON u.Make = m.Make AND u.Model = m.Model
-      WHERE u.Price < m.AvgPrice * ${1-percBelow}
+      WHERE u.Price < m.AvgPrice * (1- ${percBelow})
   )
   SELECT u.Car_Id, dr.Make, dr.Model, dr.Year, dr.Rating, dr.AvgRating AS ModelAvgRating, u.Price, u.MarketAvgPrice,
           (u.MarketAvgPrice - u.Price) AS PriceBelowMarket

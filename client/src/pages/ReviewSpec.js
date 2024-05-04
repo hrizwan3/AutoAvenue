@@ -33,9 +33,9 @@ export default function HomePage() {
 
   return (
     <Container>
-    <h1>
+    <h2>
         Here are the reviews about the {make.toUpperCase()} {model.toUpperCase()}
-    </h1>
+    </h2>
       <DataGrid
         rows={reviewData}
         columns={carReviews}

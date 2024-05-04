@@ -12,6 +12,9 @@ import {
   Legend
 } from 'chart.js';
 
+import { Bar } from 'react-chartjs-2';
+
+
 // Register Chart.js components
 ChartJS.register(
   CategoryScale,
@@ -28,6 +31,7 @@ const config = require('../config.json');
 export default function CarCard({ Car_Id, handleClose }) {
   const [carData, setCarData] = useState({});
   const [carImage, setCarImage] = useState('');
+  const [carZscore, setCarZscore] = useState(0);
   const [error, setError] = useState(false);
 
   useEffect(() => {
@@ -42,59 +46,59 @@ export default function CarCard({ Car_Id, handleClose }) {
         setCarData(carData);
         return fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(carData.Make + ' ' + carData.Model)}&client_id=mdrWUkxYZXgG38Fo5TcaHZP98l1Guqs0Q3qejCL5nX8`)
       })
-      .then(imgRes => imgRes.json())
-      .then(imgJson => {
-        setCarImage(imgJson.results[0]?.urls?.regular);
+      .then(res => res.json())
+      .then(imgData => {
+        setCarImage(imgData.results[0]?.urls?.regular);
+        return fetch(`http://${config.server_host}:${config.server_port}/car_zscore/${Car_Id}`)
       })
-      .catch(error => {
-        console.error("Failed to fetch data:", error);
+      .then(res => res.json())
+      .then(zscoreData => {
+        setCarZscore(zscoreData.Z_Score);
+      })
+      .catch(err => {
+        console.error("Error fetching data:", err);
         setError(true);
       });
   }, [Car_Id]);
 
-  const bellCurveData = {
-    labels: Array.from({ length: 400 }, (_, i) => (i - 200) / 100),
+  // Create histogram data
+  const numBars = 100;
+  const range = 10; // Typically, Z-Scores range from -5 to 5 for visualization
+  const binWidth = range * 2 / numBars;
+  const histogramData = Array(numBars).fill(0);
+  const barLabels = Array.from({ length: numBars }, (_, i) => (-range + i * binWidth).toFixed(2));
+
+  // Assuming Z-Score falls into this histogram
+  if (carZscore !== null) {
+    const index = Math.floor((carZscore + range) / binWidth);
+    if (index >= 0 && index < numBars) {
+      histogramData[index] = 1; // Set the frequency of the bin where the Z-Score falls
+    }
+  }
+
+  const chartData = {
+    labels: barLabels,
     datasets: [{
-      label: 'Bell Curve',
-      data: Array.from({ length: 400 }, (_, i) => {
-        let x = (i - 200) / 100;
-        return (1 / Math.sqrt(2 * Math.PI)) * Math.exp(-0.5 * x * x);
-      }),
-      borderColor: 'black',
-      borderWidth: 2,
+      label: 'Frequency',
+      data: histogramData,
+      backgroundColor: 'rgba(54, 162, 235, 0.5)',
+      borderColor: 'rgba(54, 162, 235, 1)',
+      borderWidth: 1,
     }]
   };
 
-  const bellCurveOptions = {
-    responsive: true,
+  const chartOptions = {
     scales: {
-      x: {
-        type: 'linear',
-        position: 'bottom',
-        min: -4,
-        max: 4,
-        title: {
-          display: true,
-          text: 'Z-Score'
-        }
-      },
       y: {
-        beginAtZero: true
+        beginAtZero: true,
+        ticks: {
+          stepSize: 1
+        }
       }
     },
     plugins: {
-      legend: {display: false},
-      tooltip: {
-        callbacks: {
-          label: function(context) {
-            return context.parsed.y.toFixed(2);
-          }
-        }
-      }
-    },
-    elements: {
-      point: {
-        radius: 0
+      legend: {
+        display: false
       }
     }
   };
@@ -103,64 +107,24 @@ export default function CarCard({ Car_Id, handleClose }) {
     return <p>Failed to load data, please try again later.</p>;
   }
 
-//   return (
-//     <Modal
-//       open={true}
-//       onClose={handleClose}
-//       style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-//     >
-//       <Box
-//         p={3}
-//         style={{ background: 'white', borderRadius: '16px', border: '2px solid #000', width: 'auto' }}
-//       >
-//         <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-//           <h1>{carData.Make} {carData.Model}</h1>
-//           <h2>Year: {carData.Year}</h2>
-//           {carImage && <img src={carImage} alt={`${carData.Make} ${carData.Model}`} style={{ maxWidth: '100%', height: 'auto', maxHeight: '200px' }} />}
-//           <p>Price: ${carData.Price?.toFixed(2)}</p>
-//           <p>Mileage: {carData.Mileage?.toLocaleString()} miles</p>
-//           <p>MPG: {carData.MPG}</p>
-//           <p>Drivetrain: {carData.Drivetrain}</p>
-//           <p>Fuel Type: {carData.Fuel_type}</p>
-//           <p>Accident History: {carData.Accident ? 'Yes' : 'No'}</p>
-//           <p>One Owner: {carData.One_owner ? 'Yes' : 'No'}</p>
-//           <Line data={bellCurveData} options={bellCurveOptions} />
-//           <Button onClick={handleClose} style={{ marginTop: 20 }}>
-//             Close
-//           </Button>
-//         </div>
-//       </Box>
-//     </Modal>
-//   );
-// }
-
-return (
-  <Modal
-    open={true}
-    onClose={handleClose}
-    style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}
-  >
-    <Box
-      p={3}
-      style={{ background: 'white', borderRadius: '16px', border: '2px solid #000', width: 'auto', maxHeight: '90vh', overflowY: 'auto' }}
-    >
-      <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
-        <h1>{carData.Make} {carData.Model}</h1>
-        <h2>Year: {carData.Year}</h2>
-        {carImage && <img src={carImage} alt={`${carData.Make} ${carData.Model}`} style={{ maxWidth: '100%', maxHeight: '200px' }} />}
-        <p>Price: ${carData.Price?.toFixed(2)}</p>
-        <p>Mileage: {carData.Mileage?.toLocaleString()} miles</p>
-        <p>MPG: {carData.MPG}</p>
-        <p>Drivetrain: {carData.Drivetrain}</p>
-        <p>Fuel Type: {carData.Fuel_type}</p>
-        <p>Accident History: {carData.Accident ? 'Yes' : 'No'}</p>
-        <p>One Owner: {carData.One_owner ? 'Yes' : 'No'}</p>
-        <Line data={bellCurveData} options={bellCurveOptions} />
-        <Button onClick={handleClose} style={{ marginTop: 20 }}>
-          Close
-        </Button>
-      </div>
-    </Box>
-  </Modal>
-);
+  return (
+    <Modal open={true} onClose={handleClose} style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Box p={3} style={{ background: 'white', borderRadius: '16px', border: '2px solid #000', width: 'auto', maxHeight: '90vh', overflowY: 'auto' }}>
+        <div style={{ display: 'flex', flexDirection: 'column', alignItems: 'center' }}>
+          <h1>{carData.Make} {carData.Model}</h1>
+          <h2>Year: {carData.Year}</h2>
+          {carImage && <img src={carImage} alt={`${carData.Make} ${carData.Model}`} style={{ maxWidth: '100%', maxHeight: '200px' }} />}
+          <p>Price: ${carData.Price?.toFixed(2)}</p>
+          <p>Mileage: {carData.Mileage?.toLocaleString()} miles</p>
+          <p>MPG: {carData.MPG}</p>
+          <p>Drivetrain: {carData.Drivetrain}</p>
+          <p>Fuel Type: {carData.Fuel_type}</p>
+          <p>Accident History: {carData.Accident ? 'Yes' : 'No'}</p>
+          <p>One Owner: {carData.One_owner ? 'Yes' : 'No'}</p>
+          <Bar data={chartData} options={chartOptions} />
+          <Button onClick={handleClose} style={{ marginTop: 20 }}>Close</Button>
+        </div>
+      </Box>
+    </Modal>
+  );
 }

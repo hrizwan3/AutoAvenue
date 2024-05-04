@@ -1,12 +1,14 @@
 import { useEffect, useState } from 'react';
 import { Container, Divider, Link, Typography } from '@mui/material';
 import LazyTable from '../components/LazyTable';
+import { DataGrid } from '@mui/x-data-grid';
 
 const config = require('../config.json');
 
 export default function HomePage() {
   const [carOfTheDay, setCarOfTheDay] = useState({});
   const [carImage, setCarImage] = useState('');
+  const [table2data, setTable2Data] = useState([]);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/car_of_the_day`)
@@ -28,38 +30,67 @@ export default function HomePage() {
       .catch(error => console.error("Failed to fetch car of the day:", error));
   }, []);
 
+  useEffect(() => {
+    fetch(`http://${config.server_host}:${config.server_port}/car_rankings`)
+      .then(res => res.json())
+      .then(data => {
+        console.log(data);
+        const enrichedData = data.map((car, index)=> ({
+          ...car,
+          id: index,
+          Make: car.Make.toUpperCase(),
+          Model: car.Model.toUpperCase()
+        }));
+        setTable2Data(enrichedData);
+      })
+      .catch(err => {
+        console.error('Failed to fetch car rankings data:', err);
+      });
+  }, []);
+
   const carColumns = [
-    {
-      field: 'Make',
-      headerName: 'Make',
-    },
-    {
-      field: 'Model',
-      headerName: 'Model',
-    },
-    {
-      field: 'avg_rating',
-      headerName: 'Rating',
-    }
+    { field: 'Make', headerName: 'Make' },
+    { field: 'Model', headerName: 'Model' },
+    { field: 'avg_rating', headerName: 'Rating' }
   ];
-   
-return (
-  <Container>
-    <Typography variant="h5">Check out our featured car of the day:</Typography>
-    <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
-      <div>
-        <p>
-          {carOfTheDay.make && carOfTheDay.model && carOfTheDay.year ?
-            `${carOfTheDay.make} ${carOfTheDay.model}, ${carOfTheDay.year}` :
-            "Loading or no car of the day available."
-          }
-        </p>
+
+  const table2columns = [
+    { field: 'Make', headerName: 'Make', width: 100 },
+    { field: 'Model', headerName: 'Model', width: 100 },
+    { field: 'AverageRating', headerName: 'Average Rating', width: 130 },
+    { field: 'AveragePrice', headerName: 'Average Price', width: 130 },
+    { field: 'AverageMileage', headerName: 'Average Mileage', width: 130 },
+    { field: 'PercentageAccidents', headerName: '% Accidents', width: 130 },
+    { field: 'NumReviews', headerName: 'Number of Reviews', width: 130 }
+    // { field: 'Ranking', headerName: 'Ranking', width: 90 }
+  ];
+
+  return (
+    <Container>
+      <Typography variant="h5">Check out our featured car of the day:</Typography>
+      <div style={{ display: 'flex', alignItems: 'center', justifyContent: 'space-between', marginBottom: '20px' }}>
+        <div>
+          <p>
+            {carOfTheDay.make && carOfTheDay.model && carOfTheDay.year ?
+              `${carOfTheDay.make} ${carOfTheDay.model}, ${carOfTheDay.year}` :
+              "Loading or no car of the day available."
+            }
+          </p>
+        </div>
+        <img src={carImage} alt="Car of the Day" style={{ width: '200px', height: 'auto', marginLeft: '20px' }} />
       </div>
-      <img src={carImage} alt="Car of the Day" style={{ width: '200px', height: 'auto', marginLeft: '20px' }} />
-    </div>
-    <Divider />
-    <Typography variant="h6">Top Cars By Rating</Typography>
-    <LazyTable route={`http://${config.server_host}:${config.server_port}/car_ratings`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
-  </Container>
-);
-};
+      <Divider />
+      <Typography variant="h6">Top Cars By Rating</Typography>
+      <LazyTable route={`http://${config.server_host}:${config.server_port}/car_ratings`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
+      <Typography variant="h6">Car Use and Safety History</Typography>
+      {/* <LazyTable data={table2data} columns={table2columns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} /> */}
+      <DataGrid
+        rows={table2data}
+        columns={table2columns}
+        pageSize={10}
+        rowsPerPageOptions={[5,10,25]}
+        autoHeight
+      />
+    </Container>
+  );
+}

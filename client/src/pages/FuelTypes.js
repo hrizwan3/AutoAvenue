@@ -48,6 +48,7 @@ export default function HomePage() {
 
   return (
     <Container>
+      <h1>Most Efficient and Economical Cars</h1>
       <h2>Fuel Type: {selectedFuelType}</h2>
       <FormControl fullWidth>
         <InputLabel id="fuel-type-label">Fuel Type</InputLabel>

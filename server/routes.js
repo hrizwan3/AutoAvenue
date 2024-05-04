@@ -494,7 +494,7 @@ const car_fueltypes = async function(req, res) {
       ROUND(DepreciationPercent, 2) AS AverageDepreciation, MPG 
     FROM CheapestHighRated
     WHERE Fuel_Type = "${fuelTypeQuery}"
-    ORDER BY Price ASC, AverageRating DESC;
+    ORDER BY MPG DESC, Price;
   `;
 
   connection.query(qry, (err, data) => {

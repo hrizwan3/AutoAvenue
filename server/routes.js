@@ -427,12 +427,7 @@ const hidden_gems = async function(req, res) {
   const percBelow = req.query.perc_below ?? 0.1;
 
   qry = `
-  WITH MarketAveragePrice AS (
-    SELECT Make, Model, AVG(Price) AS AvgPrice
-    FROM UsedCars
-    GROUP BY Make, Model
-  ),
-  DecentlyRated AS (
+  WITH DecentlyRated AS (
       SELECT r.Make, r.Model, r.Year, r.Rating, AVG(Rating) AS AvgRating
       FROM Reviews r
       WHERE Rating >= ${minRating}

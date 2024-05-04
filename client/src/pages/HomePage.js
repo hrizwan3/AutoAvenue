@@ -61,8 +61,8 @@ export default function HomePage() {
     { field: 'AveragePrice', headerName: 'Average Price', width: 130 },
     { field: 'AverageMileage', headerName: 'Average Mileage', width: 130 },
     { field: 'PercentageAccidents', headerName: '% Accidents', width: 130 },
-    { field: 'NumReviews', headerName: 'Number of Reviews', width: 130 },
-    { field: 'Ranking', headerName: 'Ranking', width: 90 }
+    { field: 'NumReviews', headerName: 'Number of Reviews', width: 130 }
+    // { field: 'Ranking', headerName: 'Ranking', width: 90 }
   ];
 
   return (
@@ -82,7 +82,7 @@ export default function HomePage() {
       <Divider />
       <Typography variant="h6">Top Cars By Rating</Typography>
       <LazyTable route={`http://${config.server_host}:${config.server_port}/car_ratings`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
-      <Typography variant="h6">Car Efficiency and Safety Rating</Typography>
+      <Typography variant="h6">Car Use and Safety History</Typography>
       {/* <LazyTable data={table2data} columns={table2columns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} /> */}
       <DataGrid
         rows={table2data}

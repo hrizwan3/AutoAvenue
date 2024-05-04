@@ -33,9 +33,9 @@ export default function NavBar() {
         <Toolbar disableGutters>
           <NavText href='/' text='AutoAvenue' isMain />
           <NavText href='/search' text='SEARCH' />
-          <NavText href='/compare' text='COMPARE' />
           <NavText href='/reviews' text='REVIEWS' />
           <NavText href='/hidden_gems' text='GEMS' />
+          <NavText href='/carsafetyratings' text='SAFETY RANKING' />
         </Toolbar>
       </Container>
     </AppBar>

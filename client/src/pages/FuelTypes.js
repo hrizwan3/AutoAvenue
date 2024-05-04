@@ -12,7 +12,7 @@ export default function HomePage() {
 
   useEffect(() => {
     // Fetch the car of the day, which is actually a review that includes car details
-    fetch(`http://${config.server_host}:${config.server_port}/car_fueltypes`)
+    fetch(`http://${config.server_host}:${config.server_port}/car_fueltypes/'d`)
       .then(res => res.json())
       .then(resJson => {
         const reviews = resJson.map((reviews) => ({ id: reviews.Model, ...reviews }));

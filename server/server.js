@@ -16,7 +16,7 @@ app.get('/car_efficiency/:make/:model', routes.car_efficiency);
 app.get('/reviewer/:reviewer_name', routes.reviewer);
 app.get('/reviewer_avg/:reviewer_name', routes.reviewer_avg);
 app.get('/search_cars', routes.search_cars);
-app.get('/price_estimates/:make/:model', routes.price_estimates);
+app.get('/price_estimates/:make/:model/:year', routes.price_estimates);
 app.get('/car_rankings', routes.car_rankings);
 app.get('/car_safety_and_rankings', routes.car_safety_and_rankings);
 app.get('/car_zscore/:car_id', routes.car_zscore);

@@ -255,12 +255,12 @@ const search_cars = async function(req, res) {
 const price_estimates = async function(req, res) {
   const make = req.params.make;
   const model = req.params.model;
-  const year = req.param.year;
+  const year = req.params.year;
 
   qry = `
   SELECT Make, Model, Year, AVG(Price) AS AveragePrice
   FROM UsedCars
-  WHERE Make LIKE '${make}%' AND model LIKE '${model}%' AND year=${year}
+  WHERE Make = '${make}' AND Model = '${model}' AND Year=${year}
   GROUP BY Make, Model, Year
   `
   

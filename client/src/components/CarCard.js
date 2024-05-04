@@ -32,7 +32,38 @@ export default function CarCard({ Car_Id, handleClose }) {
   const [carImage, setCarImage] = useState('');
   const [error, setError] = useState(false);
 
+  // useEffect(() => {
+  //   fetch(`http://${config.server_host}:${config.server_port}/car/${Car_Id}`)
+  //     .then(res => {
+  //       if (!res.ok) {
+  //         throw new Error('Network response was not ok');
+  //       }
+  //       return res.json();
+  //     })
+  //     .then(carData => {
+  //       setCarData(carData);
+  //       return fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(carData.Make + ' ' + carData.Model)}&client_id=mdrWUkxYZXgG38Fo5TcaHZP98l1Guqs0Q3qejCL5nX8`)
+  //     })
+  //     .then(imgRes => imgRes.json())
+  //     .then(imgJson => {
+  //       setCarImage(imgJson.results[0]?.urls?.regular);
+  //     })
+  //     .then(
+  //       fetch(`http://${config.server_host}:${config.server_port}/price_estimates/${carData.Make}/${carData.Model}/${carData.Year}`)
+  //     )
+  //     .then(res => res.json())
+  //     .then(priceData => {
+  //       console.log(priceData);
+  //       setCarData(prev => ({ ...prev, AvgPrice: priceData.AveragePrice }));
+  //     })
+  //     .catch(error => {
+  //       console.error("Failed to fetch data:", error);
+  //       setError(true);
+  //     });
+  // }, [Car_Id]);
+
   useEffect(() => {
+    // Initial fetch to get car data
     fetch(`http://${config.server_host}:${config.server_port}/car/${Car_Id}`)
       .then(res => {
         if (!res.ok) {
@@ -41,18 +72,50 @@ export default function CarCard({ Car_Id, handleClose }) {
         return res.json();
       })
       .then(carData => {
-        setCarData(carData);
-        return fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(carData.Make + ' ' + carData.Model)}&client_id=mdrWUkxYZXgG38Fo5TcaHZP98l1Guqs0Q3qejCL5nX8`)
-      })
-      .then(imgRes => imgRes.json())
-      .then(imgJson => {
-        setCarImage(imgJson.results[0]?.urls?.regular);
+        setCarData(carData); // Update car data
+  
+        // Fetch image from Unsplash
+        fetch(`https://api.unsplash.com/search/photos?query=${encodeURIComponent(carData.Make + ' ' + carData.Model)}&client_id=mdrWUkxYZXgG38Fo5TcaHZP98l1Guqs0Q3qejCL5nX8`)
+          .then(imgRes => {
+            if (!imgRes.ok) {
+              throw new Error('Image fetch failed');
+            }
+            return imgRes.json();
+          })
+          .then(imgJson => {
+            if (imgJson.results && imgJson.results.length > 0) {
+              setCarImage(imgJson.results[0].urls.regular); // Update car image if available
+            } else {
+              throw new Error('No images found');
+            }
+          })
+          .catch(err => {
+            console.error("Error fetching image:", err);
+            setError(true);
+          });
+  
+        // Fetch average price, ensure this is nested or chained properly
+        return fetch(`http://${config.server_host}:${config.server_port}/price_estimates/${carData.Make}/${carData.Model}/${carData.Year}`)
+          .then(priceRes => {
+            if (!priceRes.ok) {
+              throw new Error('Failed to fetch average price');
+            }
+            return priceRes.json();
+          })
+          .then(priceData => {
+            setCarData(prev => ({ ...prev, AvgPrice: priceData[0].AveragePrice })); // Update car data with average price
+          })
+          .catch(err => {
+            console.error("Error fetching average price:", err);
+            setError(true);
+          });
       })
       .catch(error => {
-        console.error("Failed to fetch data:", error);
+        console.error("Failed to fetch car data:", error);
         setError(true);
       });
-  }, [Car_Id]);
+  }, [Car_Id]); // Dependency array
+  
 
   const bellCurveData = {
     labels: Array.from({ length: 400 }, (_, i) => (i - 200) / 100),
@@ -151,6 +214,7 @@ return (
         <h2>Year: {carData.Year}</h2>
         {carImage && <img src={carImage} alt={`${carData.Make} ${carData.Model}`} style={{ maxWidth: '100%', maxHeight: '200px' }} />}
         <p>Price: ${carData.Price?.toFixed(2)}</p>
+        <p>Market Average: ${carData.AvgPrice?.toFixed(2)}</p>
         <p>Mileage: {carData.Mileage?.toLocaleString()} miles</p>
         <p>MPG: {carData.MPG}</p>
         <p>Drivetrain: {carData.Drivetrain}</p>

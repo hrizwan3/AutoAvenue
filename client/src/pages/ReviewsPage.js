@@ -17,20 +17,16 @@ export default function HomePage() {
     fetch(`http://${config.server_host}:${config.server_port}/car_reviews`)
       .then(res => res.json())
       .then(resJson => {
-        const reviews = resJson.map((reviews) => ({ id: reviews.Review_id, ...reviews }));
+        const reviews = resJson.map((reviews) => ({ id: reviews.Review_Id, ...reviews }));
         setReviewData(reviews);
       });
   }, []);
 
-  // Define the columns for the car table
-  const toUpperCase = (text) => text ? text.toUpperCase() : 'N/A';  // Default to 'N/A' if no text
-
-
   const carReviews = [
     { field: 'Review_Id', headerName: 'Reviewer ID', width: 150 },
     { field: 'Title', headerName: 'Review Title', width: 150 },
-    { field: 'Review', headerName: 'Review', width: 150 },
-    { field: 'Rating', headerName: 'Rating', width: 150 }
+    { field: 'Rating', headerName: 'Rating', width: 150 },
+    { field: 'Review', headerName: 'Review', width: 10000 }
   ]
 
   const search = () => {
@@ -40,10 +36,10 @@ export default function HomePage() {
     // }).toString();
 
 
-    fetch(`http://${config.server_host}:${config.server_port}/search_songs?make=${make}&model=${model}`)      
+    fetch(`http://${config.server_host}:${config.server_port}/car_reviews/${make}/${model}`)      
     .then(res => res.json())
       .then(resJson => {
-        const reviews = resJson.map((reviews) => ({ id: reviews.Review_id, ...reviews }));
+        const reviews = resJson.map((reviews) => ({ id: reviews.Review_Id, ...reviews }));
         setReviewData(reviews);
       });
   }
@@ -51,7 +47,7 @@ export default function HomePage() {
   return (
     <Container>
       <Grid container spacing={2}>
-        <Grid item xs={6}>
+      <Grid item xs={6}>
           <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value)} fullWidth/>
         </Grid>
         <Grid item xs={6}>

@@ -56,7 +56,7 @@ const car_reviews = async function(req, res) {
   const model = req.params.model;
   const year = req.query.year ?? 0;
   qry = `
-  SELECT Reviewer, Title, Review, Rating
+  SELECT *
   FROM Reviews
   WHERE Make LIKE "${make}%" AND Model LIKE "${model}%"
   `;

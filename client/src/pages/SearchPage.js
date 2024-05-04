@@ -77,7 +77,7 @@ export default function SearchCarsPage() {
 
   return (
     <Container>
-      {selectedCarId && <CarCard CarId={selectedCarId} handleClose={() => setSelectedCarId(null)} />}
+      {selectedCarId && <CarCard Car_Id={selectedCarId} handleClose={() => setSelectedCarId(null)} />}
       <h2>Search Cars</h2>
       <Grid container spacing={2}>
         <Grid item xs={6}>

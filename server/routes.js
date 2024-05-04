@@ -294,9 +294,9 @@ const price_estimates = async function(req, res) {
 
 // Route 10: GET /car_rankings
 const car_rankings = async function(req, res) {
-  const count = req.query.count ?? 10;
-  const avgMileage = req.query.avg_mileage ?? 10000000000;
-  const pctAccidents = req.query.pct_accidents ?? 1;
+  const count = 10;
+  const avgMileage = 100000;
+  const pctAccidents = 50;
 
   qry = `
   WITH RankedModels AS (

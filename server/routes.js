@@ -508,6 +508,7 @@ const car_reliability = async function(req, res) {
 
 
 const car_fueltypes = async function(req, res) {
+  const fuelTypeQuery = req.params.fuelTypes;
   qry = `
   WITH PriceAndDepreciation AS (
     SELECT u.Make, u.Model, u.Year, u.Drivetrain, u.Fuel_Type, AVG(u.Price) AS Price,
@@ -528,7 +529,7 @@ CheapestHighRated AS (
 SELECT Make, Model, Year, Fuel_Type, Price, AverageRating,
     ROUND(DepreciationPercent, 2) AS AverageDepreciation, MPG 
 FROM CheapestHighRated
-WHERE MPG >0 
+WHERE Fuel_Type LIKE "${fuelTypeQuery}"
 ORDER BY Fuel_Type ASC, Price ASC, AverageRating DESC;
 `;
 

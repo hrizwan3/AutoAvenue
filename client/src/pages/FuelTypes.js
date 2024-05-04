@@ -12,7 +12,7 @@ export default function HomePage() {
 
   useEffect(() => {
     // Fetch the car of the day, which is actually a review that includes car details
-    fetch(`http://${config.server_host}:${config.server_port}/car_fueltypes/'d`)
+    fetch(`http://${config.server_host}:${config.server_port}/car_fueltypes/diesel`)
       .then(res => res.json())
       .then(resJson => {
         const reviews = resJson.map((reviews) => ({ id: reviews.Model, ...reviews }));
@@ -26,7 +26,8 @@ export default function HomePage() {
     { field: 'AverageRating', headerName: 'Average Rating', width: 150 },
     { field: 'Price', headerName: 'Average Price', width: 200 },
     { field: 'AverageDepreciation', headerName: 'Average Depreciation', width: 200 },
-    { field: 'MPG', headerName: 'MPG', width: 150 }
+    { field: 'MPG', headerName: 'MPG', width: 150 },
+    { field: 'Fuel_Type', headerName: 'Fuel', width: 150 }
   ]
 //   const filteredDiesel = reviewData.filter(item => item.Fuel_Type.includes("Diesel"));
 

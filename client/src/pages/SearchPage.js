@@ -1,7 +1,7 @@
 import { useEffect, useState } from 'react';
 import { Button, Checkbox, Container, FormControlLabel, Grid, TextField, Slider } from '@mui/material';
 import { DataGrid } from '@mui/x-data-grid';
-
+import { Link } from 'react-router-dom';
 import CarCard from '../components/CarCard';
 const config = require('../config.json');
 
@@ -19,6 +19,10 @@ export default function SearchCarsPage() {
   const [isOne, setIsOne] = useState(false);
   const [noAccident, setNoAccident] = useState(false);
 
+  const handleRowClick = (params) => {
+    setSelectedCarId(params.row.id);
+  };
+
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/search_cars`)
       .then(res => res.json())
@@ -27,8 +31,7 @@ export default function SearchCarsPage() {
           ...car,
           id: car.Car_Id,
           Make: car.Make.toUpperCase(),
-          Model: car.Model.toUpperCase(),
-          One_owner: car.One_Owner === 1
+          Model: car.Model.toUpperCase()
         }));
         setData(enrichedData);
       })
@@ -42,13 +45,11 @@ export default function SearchCarsPage() {
     `&mpg_low=${mpg[0]}&mpg_high=${mpg[1]}&one_owner=${isOne}&no_accident=${noAccident}`)
       .then(res => res.json())
       .then(data => {
-        console.log(data);
         const enrichedData = data.map((car) => ({
           ...car,
           id: car.Car_Id,
           Make: car.Make.toUpperCase(),
-          Model: car.Model.toUpperCase(),
-          One_owner: car.One_Owner === 1
+          Model: car.Model.toUpperCase()
         }));
         
         setData(enrichedData);
@@ -57,7 +58,10 @@ export default function SearchCarsPage() {
   }
 
   const columns = [
-    { field: 'Make', headerName: 'Make', width: 200 },
+    { field: 'Make', headerName: 'Make', width: 150, renderCell: (params) => (
+      <Link onClick={() => setSelectedCarId(params.row.Car_Id)}>{params.value}</Link>
+  ) },
+    // { field: 'Make', headerName: 'Make', width: 200 },
     { field: 'Model', headerName: 'Model', width: 200 },
     { field: 'Year', headerName: 'Year'},
     { field: 'Price', headerName: 'Price'},
@@ -77,10 +81,10 @@ export default function SearchCarsPage() {
       <h2>Search Cars</h2>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value.toLowerCase())} fullWidth/>
+          <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value)} fullWidth/>
         </Grid>
         <Grid item xs={6}>
-          <TextField label='Model' value={model} onChange={(e) => setModel(e.target.value.toLowerCase())} fullWidth/>
+          <TextField label='Model' value={model} onChange={(e) => setModel(e.target.value)} fullWidth/>
         </Grid>
         <Grid item xs={6}>
           <p>Year Range</p>

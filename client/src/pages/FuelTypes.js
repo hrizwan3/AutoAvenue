@@ -6,7 +6,7 @@ const config = require('../config.json');
 
 export default function HomePage() {
   const [reviewData, setReviewData] = useState([]);
-  const [selectedFuelType, setSelectedFuelType] = useState('Diesel');
+  const [selectedFuelType, setSelectedFuelType] = useState('');
   const [pageSize, setPageSize] = useState(10);
 
   useEffect(() => {

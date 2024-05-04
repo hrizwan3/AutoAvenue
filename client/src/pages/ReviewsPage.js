@@ -78,6 +78,8 @@ export default function HomePage() {
         Search
       </Button>
       </Grid>
+
+      
       {/* Display car of the day details, assuming the API returns a review that includes car details */}
        <DataGrid
           rows={reviewData}

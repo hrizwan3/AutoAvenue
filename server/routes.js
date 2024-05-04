@@ -391,11 +391,24 @@ const hidden_gems = async function(req, res) {
   const percBelow = req.query.perc_below ?? 0.1;
 
   qry = `
-  SELECT DISTINCT Make, Model, Year, Fuel_Type, Price, AverageRating,
-  ROUND(DepreciationPercent, 2) AS AverageDepreciation, MPG
-  FROM CheapestHighRated
-  WHERE Fuel_Type = "Gasoline"
-  ORDER BY MPG DESC, Price;
+  WITH DecentlyRated AS (
+      SELECT r.Make, r.Model, r.Year, r.Rating, AVG(Rating) AS AvgRating
+      FROM Reviews r
+      WHERE Rating >= ${minRating}
+      GROUP BY r.Make, r.Model, r.Year
+      HAVING COUNT(r.Review_Id) >= ${minReviews} AND AVG(Rating) >= 3
+  ),
+  UnderpricedCars AS (
+      SELECT u.Car_Id, u.Make, u.Model, u.Year, u.Price, m.AvgPrice AS MarketAvgPrice
+      FROM UsedCars u
+      JOIN MarketAveragePrice m ON u.Make = m.Make AND u.Model = m.Model
+      WHERE u.Price < m.AvgPrice * (1- ${percBelow})
+  )
+  SELECT u.Car_Id, dr.Make, dr.Model, dr.Year, dr.Rating, dr.AvgRating AS ModelAvgRating, u.Price, u.MarketAvgPrice,
+          (u.MarketAvgPrice - u.Price) AS PriceBelowMarket
+  FROM DecentlyRated dr
+  JOIN UnderpricedCars u ON dr.Make = u.Make AND dr.Model = u.Model AND dr.Year = u.Year
+  ORDER BY dr.Rating DESC, dr.AvgRating DESC, PriceBelowMarket DESC;
   `;
 
   connection.query(
@@ -461,22 +474,6 @@ const car_reliability = async function(req, res) {
 const car_fueltypes = async function(req, res) {
   const fuelTypeQuery = req.params.fuel_types;
   const qry = `
-    WITH PriceAndDepreciation AS (
-      SELECT u.Make, u.Model, u.Year, u.Drivetrain, u.Fuel_Type, AVG(u.Price) AS Price,
-          MIN(u.Price) AS InitialPrice,
-          MAX(u.Price) AS FinalPrice,
-          (MIN(u.Price) - MAX(u.Price)) / MIN(u.Price) * -100.0 AS DepreciationPercent,
-          AVG(r.Rating) AS AverageRating,
-          AVG(u.MPG) AS MPG
-      FROM UsedCars u
-      JOIN Reviews r ON u.Make = r.Make AND u.Model = r.Model
-      GROUP BY u.Make, u.Model, u.Year, u.Fuel_Type
-    ),
-    CheapestHighRated AS (
-      SELECT *,
-          ROW_NUMBER() OVER (PARTITION BY Fuel_Type ORDER BY Price ASC, AverageRating DESC) AS Ranky
-      FROM PriceAndDepreciation
-    )
     SELECT DISTINCT Make, Model, Year, Fuel_Type, Price, AverageRating,
       ROUND(DepreciationPercent, 2) AS AverageDepreciation, MPG 
     FROM CheapestHighRated

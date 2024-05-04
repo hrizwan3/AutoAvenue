@@ -365,7 +365,8 @@ const car_safety_and_rankings = async function(req, res) {
         u.Make, u.Model, AVG(u.Price) AS AvgPrice,
         AVG(u.Mileage) AS AvgMileage,
         SUM(CASE WHEN u.Accident = 1.0 THEN 1 ELSE 0 END) * 100.0 / COUNT(*) AS PercentAccidents,
-        COUNT(CASE WHEN r.Rating >= 4 THEN 1 END) AS HighRatingsCount
+        COUNT(CASE WHEN r.Rating >= 4 THEN 1 END) AS HighRatingsCount,
+        AVG(r.Rating) AS AvgRating
     FROM UsedCars u
     JOIN Reviews r ON u.Make = r.Make AND u.Model = r.Model AND u.Year = r.Year
     JOIN HighlyRatedModels hrm ON u.Make = hrm.Make AND u.Model = hrm.Model

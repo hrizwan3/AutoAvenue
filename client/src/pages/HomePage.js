@@ -9,6 +9,7 @@ export default function HomePage() {
   const [carOfTheDay, setCarOfTheDay] = useState({});
   const [carImage, setCarImage] = useState('');
   const [table2data, setTable2Data] = useState([]);
+  const [pageSize2, setPageSize2] = useState(10);
 
   useEffect(() => {
     fetch(`http://${config.server_host}:${config.server_port}/car_of_the_day`)
@@ -90,8 +91,9 @@ export default function HomePage() {
       <DataGrid
         rows={table2data}
         columns={table2columns}
-        pageSize={10}
+        pageSize={pageSize2}
         rowsPerPageOptions={[5, 10, 25]}
+        onPageSizeChange={(newPageSize) => setPageSize2(newPageSize)}
         autoHeight
       />
     </Container>

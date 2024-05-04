@@ -251,37 +251,19 @@ const search_cars = async function(req, res) {
   );
 }
 
-// Route 9: GET /price_estimates/:make/:model
+// Route 9: GET /price_estimates/:make/:model/:year
 const price_estimates = async function(req, res) {
   const make = req.params.make;
   const model = req.params.model;
-  const page = req.query.page;
-  const pageSize = req.query.page_size ?? 25;
-  const disp = (page - 1) * pageSize;
-  const year = req.query.year ?? 0;
+  const year = req.param.year;
 
-  if (year) {
-    qry = `
-    SELECT Make, Model, Year, AVG(Price), MAX(Price), MIN(Price)
-    FROM UsedCars
-    WHERE Make LIKE '${make}%' AND model LIKE '${model}%' AND year=${year}
-    GROUP BY Make, Model, Year
-    ORDER BY Model
-    `
-  } else {
-    qry = `
-    SELECT Make, Model, Year, AVG(Price), MAX(Price), MIN(Price)
-    FROM UsedCars
-    WHERE Make LIKE '${make}%' AND model LIKE '${model}%'
-    GROUP BY Make, Model, Year
-    ORDER BY Model, Year
-    `
-  }
-
-  if (page) {
-    qry += `LIMIT ${pageSize} OFFSET ${disp}`
-  }  
-
+  qry = `
+  SELECT Make, Model, Year, AVG(Price) AS AveragePrice
+  FROM UsedCars
+  WHERE Make LIKE '${make}%' AND model LIKE '${model}%' AND year=${year}
+  GROUP BY Make, Model, Year
+  `
+  
   connection.query(
     qry, (err, data) => {
       if (err) {

@@ -83,10 +83,10 @@ export default function SearchCarsPage() {
       <h2>Search Cars</h2>
       <Grid container spacing={2}>
         <Grid item xs={6}>
-          <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value)} fullWidth/>
+          <TextField label='Make' value={make} onChange={(e) => setMake(e.target.value.toLowerCase())} fullWidth/>
         </Grid>
         <Grid item xs={6}>
-          <TextField label='Model' value={model} onChange={(e) => setModel(e.target.value)} fullWidth/>
+          <TextField label='Model' value={model} onChange={(e) => setModel(e.target.value.toLowerCase())} fullWidth/>
         </Grid>
         <Grid item xs={6}>
           <p>Year Range</p>

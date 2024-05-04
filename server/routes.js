@@ -96,7 +96,7 @@ const car_ratings = async function(req, res) {
   // ORDER BY AVG(r.Rating) DESC
   // `;
   qry = `
-  SELECT *
+  SELECT UPPER(Make) AS Make, UPPER(Model) AS Model, avg_rating
   FROM CarRatings
   `
   if (year) {
@@ -218,13 +218,13 @@ const search_cars = async function(req, res) {
     qry += `ORDER BY Make, Model`
   } else if (model === '') {
     qry += `
-      AND Model LIKE '${model}%'
+      AND Make LIKE '${make}%'
     ORDER BY Make, Model
     `
   } else if (make === '') {
     qry += 
     `
-     AND Make LIKE '${make}%'
+     AND Model LIKE '${model}%'
     ORDER BY Make, Model
     `
   } else {

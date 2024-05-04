@@ -28,9 +28,6 @@ export default function HomePage() {
       .catch(error => console.error("Failed to fetch car of the day:", error));
   }, []);
 
-  // Define the columns for the car table
-  const toUpperCase = (text) => text ? text.toUpperCase() : 'N/A';  // Default to 'N/A' if no text
-
   const carColumns = [
     {
       field: 'Make',

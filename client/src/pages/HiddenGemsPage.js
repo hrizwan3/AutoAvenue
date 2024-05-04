@@ -13,6 +13,16 @@ export default function HiddenGemsPage() {
 
   const [selectedCarId, setSelectedCarId] = useState(null);
 
+  useEffect(() => {
+    fetch(`http://${config.server_host}:${config.server_port}/hidden_gems`)
+    .then(res => res.json())
+    .then(data => {
+      const enrichedData = data.map((item, index) => ({ id: index, ...item }));
+      setData(enrichedData);
+    })
+    .catch(err => console.error('Error fetching hidden gems:', err));
+  }, []);
+
   const fetchData = () => {
     fetch(`http://${config.server_host}:${config.server_port}/hidden_gems?min_reviews=${minReviews}&min_rating=${minRating}&perc_below=${percBelow}`)
       .then(res => res.json())

@@ -65,8 +65,6 @@ export default function HomePage() {
           <MenuItem value="Hybrid">Hybrid</MenuItem>
           <MenuItem value="Diesel">Diesel</MenuItem>
           <MenuItem value="Natural Gas">Natural Gas</MenuItem>
-          <MenuItem value="Hydrogen">Hydrogen</MenuItem>
-          <MenuItem value="Biodiesel">Biodiesel</MenuItem>
         </Select>
       </FormControl>
       <DataGrid

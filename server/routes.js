@@ -515,11 +515,12 @@ const car_reliability = async function(req, res) {
 const car_fueltypes = async function(req, res) {
   qry = `
   WITH PriceAndDepreciation AS (
-    SELECT u.Make, u.Model, u.Year, u.Drivetrain, u.Fuel_Type, u.Price,
+    SELECT u.Make, u.Model, u.Year, u.Drivetrain, u.Fuel_Type, AVG(u.Price) AS Price,
         MIN(u.Price) AS InitialPrice,
         MAX(u.Price) AS FinalPrice,
         (MIN(u.Price) - MAX(u.Price)) / MIN(u.Price) * -100.0 AS DepreciationPercent,
-        AVG(r.Rating) AS AverageRating
+        AVG(r.Rating) AS AverageRating,
+        AVG(u.MPG) AS MPG
     FROM UsedCars u
         JOIN Reviews r ON u.Make = r.Make AND u.Model = r.Model
     GROUP BY u.Make, u.Model, u.Year, u.Fuel_Type
@@ -530,9 +531,9 @@ CheapestHighRated AS (
     FROM PriceAndDepreciation
 )
 SELECT Make, Model, Year, Fuel_Type, Price, AverageRating,
-    ROUND(DepreciationPercent, 2) AS AverageDepreciation
+    ROUND(DepreciationPercent, 2) AS AverageDepreciation, MPG 
 FROM CheapestHighRated
-WHERE Ranky <= 5
+WHERE MPG >0 
 ORDER BY Fuel_Type ASC, Price ASC, AverageRating DESC;
 `;
 

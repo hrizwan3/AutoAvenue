@@ -8,6 +8,7 @@ import SearchPage from './pages/SearchPage';
 import HiddenGemsPage from './pages/HiddenGemsPage';
 import ComparePage from './pages/ComparePage'
 import ReviewsPage from './pages/ReviewsPage'
+import ReviewSpec from './pages/ReviewSpec'
 
 const theme = createTheme({
   palette: {
@@ -56,6 +57,7 @@ export default function App() {
           <Route path="/compare" element={<ComparePage />} />
           <Route path="/reviews" element={<ReviewsPage />} />
           <Route path="/hidden_gems" element={<HiddenGemsPage />} />
+          <Route path="/reviews/:make/:model" element={<ReviewSpec />} />
         </Routes>
       </BrowserRouter>
     </ThemeProvider>

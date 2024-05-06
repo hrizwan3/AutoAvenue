@@ -21,4 +21,4 @@ To enable the database, enter the server folder and run:
 1. npm install
 2. npm start
 
-CIS550_ETL.ipynb is a Google Colab notebook that was used to process the databases. 
+CIS550_EDA.ipynb is a Google Colab notebook that was used to process the databases. 

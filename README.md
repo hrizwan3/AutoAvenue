@@ -2,24 +2,28 @@
 
 Provide a user interface to allow users to see the average price of a used car on the used market. A user will be able to query car make and model and the interface will return the average price of the car and the specific prices that it has been sold for. Additionally, a user could use it to see if they are buying a car for a fair price or to see if they’re selling a car for a fair price. 
 
-Application Structure
+Explore features such as:
+* Search - Choose your price range, production year, mileage, and MPG to find a model that fits your needs
+* Reviews - See all of the reviews for a particular make and model
+* Popular Cars - Check out the most popular cars based on number of ratings
+* Efficient Cars - Filter by preferred fuel type and see the most efficient cars of that fuel type
+* Hidden Gems - Search for vehicles that are below a certain percentage of the market price and have a minimum rating and number of reviews
 
-/server
-This folder holds the server application files, tests, and dependencies (as required by Node.js)
+Instructions for use:
 
-  ● .gitignore: A gitignore file for the Node application
+To view the frontend, enter the client folder and run:
 
-  ● config.json: Holds the RDS connection credentials/information and application
-configuration settings (like port and host)
+1. npm install
+2. npm start
 
-  ● package.json: maintains the project dependency tree; defines project properties, scripts,
-etc
+In case you see an error regarding chart.js, please run:
+```
+npm install chart.js react-chartjs-2
+```
 
-  ● package-lock.json: saves the exact version of each package in the application dependency
-tree for installs and maintenance
+To enable the database, enter the server folder and run:
 
-  ● routes.js: Code for all the API routes’ handler functions
+1. npm install
+2. npm start
 
-  ● server.js: The code for the routed HTTP application
-
-CIS550_ETL.ipynb is a Google Colab notebook that was used to process the databases. 
+CIS550_EDA.ipynb is a Google Colab notebook that was used to process the databases. 

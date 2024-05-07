@@ -83,18 +83,6 @@ const car_ratings = async function(req, res) {
   const pageSize = req.query.page_size ?? 10;
   const disp = (page - 1) * pageSize;
 
-  // qry = `
-  // SELECT u.Make, u.Model, AVG(r.Rating) AS avg_rating
-  // FROM UsedCars u JOIN Reviews r ON u.Make=r.Make AND u.Model=r.Model
-  // `;
-  // if (year) {
-  //   qry += `
-  //   WHERE u.Year = ${year}`
-  // }
-  // qry += `
-  // GROUP BY u.Make, u.Model
-  // ORDER BY AVG(r.Rating) DESC
-  // `;
   qry = `
   SELECT UPPER(Make) AS Make, UPPER(Model) AS Model, avg_rating
   FROM CarRatings

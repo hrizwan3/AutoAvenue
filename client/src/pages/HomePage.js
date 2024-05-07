@@ -79,40 +79,7 @@ export default function HomePage() {
     { field: 'AverageRating', headerName: 'Average Rating', width: 150 },
     { field: 'AverageMileage', headerName: 'Average Mileage', width: 150 }
   ];
-
-  // return (
-  //   <Container>
-  //     <Typography variant="h4" gutterBottom style={{ color: '#651fff' }}>Featured Car of the Day</Typography>
-  //     <Card sx={{ display: 'flex', justifyContent: 'space-between', mb: 2, p: 2, boxShadow: 3 }}>
-  //       <CardMedia
-  //         component="img"
-  //         sx={{ width: 200, display: 'block', borderRadius: '5px' }}
-  //         image={carImage}
-  //         alt="Car of the Day"
-  //       />
-  //       <CardContent>
-  //         <Typography variant="h5">{carOfTheDay.make} {carOfTheDay.model}</Typography>
-  //         <Typography variant="subtitle1">Year: {carOfTheDay.year}</Typography>
-  //         <Typography variant="body2" color="text.secondary">
-  //           Explore today's featured model
-  //         </Typography>
-  //       </CardContent>
-  //     </Card>
-  //     <Divider />
-  //     <Typography variant="h6">Top Cars By Rating</Typography>
-  //     <LazyTable route={`http://${config.server_host}:${config.server_port}/car_ratings`} columns={carColumns} defaultPageSize={5} rowsPerPageOptions={[5, 10, 25]} />
-  //     <Divider />
-  //     <Typography variant="h6">Most Durable High-Quality Cars</Typography>
-  //     <DataGrid
-  //       rows={table2data}
-  //       columns={table2columns}
-  //       pageSize={pageSize2}
-  //       rowsPerPageOptions={[5, 10, 25]}
-  //       onPageSizeChange={(newPageSize) => setPageSize2(newPageSize)}
-  //       autoHeight
-  //     />
-  //   </Container>
-  // );
+  
   return (
     <Container>
       <Typography variant="h4" gutterBottom style={titleStyles.featuredCar}>Featured Car of the Day</Typography>

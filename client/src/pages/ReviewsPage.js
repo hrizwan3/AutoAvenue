@@ -33,13 +33,7 @@ export default function HomePage() {
     setSelectedReview(params.row);
   };
   const search = () => {
-    // const queryParams = new URLSearchParams({
-    //   make,
-    //   model
-    // }).toString();
-
-
-  
+      
     fetch(`http://${config.server_host}:${config.server_port}/car_reviews/${make}/${model}`)      
     .then(res => res.json())
       .then(resJson => {

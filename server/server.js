@@ -1,7 +1,19 @@
 const express = require('express');
 const cors = require('cors');
-const config = require('./config');
 const routes = require('./routes');
+// const config = require('./config');
+
+require('dotenv').config();
+
+const config = {
+  rds_host: process.env.RDS_HOST,
+  rds_port: process.env.RDS_PORT,
+  rds_user: process.env.RDS_USER,
+  rds_password: process.env.RDS_PASSWORD,
+  rds_db: process.env.RDS_DB,
+  server_host: process.env.SERVER_HOST,
+  server_port: process.env.SERVER_PORT
+};
 
 const app = express();
 app.use(cors({

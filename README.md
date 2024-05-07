@@ -16,6 +16,11 @@ To view the frontend, enter the client folder and run:
 1. npm install
 2. npm start
 
+In case you see an error regarding chart.js, please run:
+```
+npm install chart.js react-chartjs-2
+```
+
 To enable the database, enter the server folder and run:
 
 1. npm install
